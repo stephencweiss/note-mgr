@@ -37,7 +37,7 @@
     },
     "lint-staged": {
         "**/*": [
-            "prettier --config .prettierrc --write"
+            "prettier --config .prettierrc.js --write"
         ]
     }
 }
