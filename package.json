@@ -1,27 +1,43 @@
 {
-  "name": "note-mgr-cli",
-  "version": "0.0.1",
-  "description": "A CLI for managing drafts, ideas, and notes",
-  "main": "index.js",
-  "bin": {
-    "note-mgr": "index.js"
-  },
-  "scripts": {
-    "build": "rimraf build && tsc",
-    "start": "node index.js"
-  },
-  "author": "Stephen Weiss <stephen.c.weiss@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "rimraf": "^3.0.2",
-    "typescript": "^3.9.7"
-  },
-  "dependencies": {
-    "@types/commander": "^2.12.2",
-    "@types/inquirer": "^6.5.0",
-    "@types/node": "^14.0.24",
-    "chalk": "^4.1.0",
-    "commander": "^6.0.0",
-    "inquirer": "^7.3.2"
-  }
+    "name": "note-mgr-cli",
+    "version": "0.0.1",
+    "description": "A CLI for managing drafts, ideas, and notes",
+    "main": "index.js",
+    "bin": {
+        "note-mgr": "index.js"
+    },
+    "scripts": {
+        "build": "rimraf build && tsc",
+        "lint:check": "npx prettier --config .prettierrc.js --check **/*",
+        "start": "node index.js"
+    },
+    "author": "Stephen Weiss <stephen.c.weiss@gmail.com>",
+    "license": "MIT",
+    "devDependencies": {
+        "husky": "^4.2.5",
+        "lint-staged": "^10.2.11",
+        "prettier": "^2.0.5",
+        "rimraf": "^3.0.2",
+        "typescript": "^3.9.7"
+    },
+    "dependencies": {
+        "@types/commander": "^2.12.2",
+        "@types/inquirer": "^6.5.0",
+        "@types/node": "^14.0.24",
+        "build": "^0.1.4",
+        "chalk": "^4.1.0",
+        "commander": "^6.0.0",
+        "dotenv": "^8.2.0",
+        "inquirer": "^7.3.2"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "**/*": [
+            "prettier --config .prettierrc --write"
+        ]
+    }
 }
