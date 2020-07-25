@@ -6,6 +6,7 @@ import path from "path"
 const fsPromises = fs.promises
 
 const HOME = os.homedir()
+const NOTES_ROOT_DIR = "NOTES_ROOT_DIR"
 
 interface SetupOptions {
     targetDir?: string
@@ -31,29 +32,34 @@ export async function setup({ targetDir }: SetupOptions) {
 }
 
 class NoteManagerConfiguration {
+    #targetPath = ""
+    #noteMgrConfigPath = ""
+    #defaultConfigValues = ""
     constructor(targetDir: string) {
-        this.validateTarget(targetDir)
+        this.#targetPath = path.resolve(HOME, String(targetDir))
+        this.#defaultConfigValues = `${NOTES_ROOT_DIR}=${this.#targetPath}`
+        this.configureNoteMgr()
     }
+
     /**
-     * Validates that the target directory exists and has the appropriate files saved within.
-     * Will create any missed directories or files necessary for the appropriate functioning of this application.
-     * The file structure should reflect the following
+     * Configures note-mgr.
+     * First determines if the necessary directories and files for the application exist.
+     * If they do not, this method creates any missed directories or files.
+     * The desired file structure is as follows:
      * .
      * └── targetDir
      *     ├── drafts
      *     │   └── .drafts.md
      *     └── notes
      *         └── .notes.md
-     *
+     * A final step is to save the results to the note-mgr config file.
      */
-    validateTarget(targetDir: string) {
-        const targetPath = path.resolve(HOME, String(targetDir))
-        const draftsDir = `${targetPath}/drafts`
-        const notesDir = `${targetPath}/notes`
+    configureNoteMgr(): void {
+        const draftsDir = `${this.#targetPath}/drafts`
+        const notesDir = `${this.#targetPath}/notes`
         fsPromises
-            .access(targetPath)
+            .access(this.#targetPath)
             .then(() => {
-                console.log(`${targetPath} exists`)
                 this.draftsExists(draftsDir)
                 this.notesExists(notesDir)
             })
@@ -61,6 +67,28 @@ class NoteManagerConfiguration {
                 this.createDraftsDir(draftsDir)
                 this.createNotesDir(notesDir)
             })
+            .finally(() => this.setNoteMgrConfig())
+    }
+
+    /**
+     * Saves the targetDir to a config file in the home directory, `.note-mgr`
+     */
+    private setNoteMgrConfig(): Promise<void> {
+        this.#noteMgrConfigPath = path.resolve(HOME, ".note-mgr")
+        return new Promise((resolve, reject) => {
+            try {
+                resolve(
+                    fsPromises
+                        .access(this.#noteMgrConfigPath)
+                        .then(() => this.updateConfig())
+                        .catch(() =>
+                            this.writeConfig(this.#defaultConfigValues)
+                        )
+                )
+            } catch (error) {
+                reject(error)
+            }
+        })
     }
 
     draftsExists(draftDir: string) {
@@ -95,24 +123,73 @@ class NoteManagerConfiguration {
             })
     }
 
-    createDraftsDir(draftDir: string) {
+    async updateConfig() {
+        try {
+            const data = await this.readConfig()
+            const updatedData =
+                data &&
+                this.modifyConfig(data, NOTES_ROOT_DIR, this.#targetPath)
+            updatedData && this.writeConfig(updatedData)
+        } catch (error) {
+            throw new Error(`Failed to update config`)
+        }
+    }
+
+    private readConfig(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const readStream = fs.createReadStream(this.#noteMgrConfigPath, {
+                encoding: "utf8",
+            })
+            let data: string = ""
+            readStream.on("data", (chunk) => (data += chunk))
+            readStream.on("error", (error) => reject(error))
+            readStream.on("end", () => resolve(data))
+        })
+    }
+
+    /**
+     * Takes a config file, and updates the targetKey to the newValue before returning the entire file, recompiled into
+     * a unified whole.
+     */
+    private modifyConfig(data: string, targetKey: string, newValue: string) {
+        return data
+            .split("\n")
+            .map((entry: string) => entry.split("="))
+            .map((entry: string[]) => {
+                if (entry[0] === targetKey) {
+                    entry[1] = newValue
+                }
+                return entry.join("=")
+            })
+            .join("\n")
+    }
+    private writeConfig(data: string) {
+        const writeStream = fs.createWriteStream(this.#noteMgrConfigPath, {
+            encoding: "utf8",
+        })
+        writeStream.write(data)
+        writeStream.on("error", (error) => new Error(error.message))
+        writeStream.on("end", () => {
+            console.log(`Successfully updated config`)
+        })
+    }
+
+    private createDraftsDir(draftDir: string) {
         const draftsPath = path.resolve(HOME, draftDir)
         fs.mkdirSync(draftsPath, { recursive: true })
         this.initializeDraftsCatalogue(draftsPath)
-        console.log(`created ${draftsPath}`)
     }
 
-    createNotesDir(notesDir: string) {
+    private createNotesDir(notesDir: string) {
         const notesPath = path.resolve(HOME, notesDir)
         fs.mkdirSync(notesPath, { recursive: true })
         this.initializeNotesCatalogue(notesPath)
-        console.log(`created ${notesPath}`)
     }
 
     /**
      * The `.drafts.md` file is a catalogue of all drafts
      */
-    initializeDraftsCatalogue(path: string) {
+    private initializeDraftsCatalogue(path: string) {
         console.log(`path --> `, { path })
         fs.writeFile(`${path}/.drafts.md`, "# Drafts", (err) => {
             if (err)
@@ -125,7 +202,7 @@ class NoteManagerConfiguration {
     /**
      * The `.notes.md` file is a catalogue of all notes
      */
-    initializeNotesCatalogue(path: string) {
+    private initializeNotesCatalogue(path: string) {
         console.log(`path --> `, { path })
         fs.writeFile(`${path}/.notes.md`, "# Notes", (err) => {
             if (err)
