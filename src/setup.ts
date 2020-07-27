@@ -48,23 +48,18 @@ class NoteManagerConfiguration {
      * The desired file structure is as follows:
      * .
      * └── targetDir
-     *     ├── drafts
-     *     │   └── .drafts.md
      *     └── notes
      *         └── .notes.md
      * A final step is to save the results to the note-mgr config file.
      */
     configureNoteMgr(): void {
-        const draftsDir = `${this.#targetPath}/drafts`
         const notesDir = `${this.#targetPath}/notes`
         fsPromises
             .access(this.#targetPath)
             .then(() => {
-                this.draftsExists(draftsDir)
                 this.notesExists(notesDir)
             })
             .catch(() => {
-                this.createDraftsDir(draftsDir)
                 this.createNotesDir(notesDir)
             })
             .finally(() => this.setNoteMgrConfig())
@@ -89,22 +84,6 @@ class NoteManagerConfiguration {
                 reject(error)
             }
         })
-    }
-
-    draftsExists(draftDir: string) {
-        const draftPath = path.resolve(HOME, draftDir)
-        fsPromises
-            .access(draftPath)
-            .then(() => {
-                console.log(`${draftPath} exists`)
-                fsPromises
-                    .access(`${draftPath}/.drafts.md`)
-                    .then(() => `${draftPath}/.drafts.md exists`)
-                    .catch(() => this.initializeDraftsCatalogue(draftPath))
-            })
-            .catch(() => {
-                this.createDraftsDir(draftDir)
-            })
     }
 
     notesExists(noteDir: string) {
@@ -174,12 +153,6 @@ class NoteManagerConfiguration {
         })
     }
 
-    private createDraftsDir(draftDir: string) {
-        const draftsPath = path.resolve(HOME, draftDir)
-        fs.mkdirSync(draftsPath, { recursive: true })
-        this.initializeDraftsCatalogue(draftsPath)
-    }
-
     private createNotesDir(notesDir: string) {
         const notesPath = path.resolve(HOME, notesDir)
         fs.mkdirSync(notesPath, { recursive: true })
@@ -187,24 +160,11 @@ class NoteManagerConfiguration {
     }
 
     /**
-     * The `.drafts.md` file is a catalogue of all drafts
-     */
-    private initializeDraftsCatalogue(path: string) {
-        console.log(`path --> `, { path })
-        fs.writeFile(`${path}/.drafts.md`, "# Drafts", (err) => {
-            if (err)
-                throw new Error(
-                    `Failed to create .drafts.md at path ${path}.\n${err}`
-                )
-        })
-    }
-
-    /**
      * The `.notes.md` file is a catalogue of all notes
      */
     private initializeNotesCatalogue(path: string) {
         console.log(`path --> `, { path })
-        fs.writeFile(`${path}/.notes.md`, "# Notes", (err) => {
+        fs.writeFile(`${path}/.notes.md`, "# Drafts\n\n# Notes\n", (err) => {
             if (err)
                 throw new Error(
                     `Failed to create .notes.md at path ${path}.\n${err}`
