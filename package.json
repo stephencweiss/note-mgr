@@ -4,7 +4,7 @@
     "description": "A CLI for managing drafts, ideas, and notes",
     "main": "index.js",
     "bin": {
-        "note-mgr": "index.js"
+        "nom": "index.js"
     },
     "scripts": {
         "lint:check": "npx prettier --config .prettierrc.js --check **/*",

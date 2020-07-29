@@ -1,8 +1,10 @@
-# Note-Mgr
+# Note-Mgr (nom for short)
 
 A CLI for managing drafts, ideas, and notes.
 
-`note-mgr` helps you stay organized by managing your notes for you. Notes are stored collectively in a directory of your choosing. The main features of `note-mgr` are:
+`note-mgr`, aka `nom`, is hungry to help you stay organized by managing your notes for you.
+
+## Features
 
 1. Organization: A `.index.md` file separates drafts from published notes - making it easier to hop into an unfinished draft. `.index` is also organized A->Z for both lists.
 1. Draft Generation: Use the interactive command line to quickly populate the frontmatter for new notes or directly via the command options
@@ -26,7 +28,7 @@ $ yarn global add note-mgr
 Then use it from the command line:
 
 ```shell
-$ note-mgr --help
+$ nom --help
 ```
 
 ## Local Development
