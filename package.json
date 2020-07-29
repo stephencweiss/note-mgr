@@ -7,13 +7,23 @@
         "note-mgr": "index.js"
     },
     "scripts": {
-        "build": "rimraf build && tsc",
         "lint:check": "npx prettier --config .prettierrc.js --check **/*",
-        "start": "node index.js"
+        "start": "node index.js",
+        "type-check": "tsc --noEmit",
+        "type-check:watch": "npm run type-check -- --watch",
+        "build": "rimraf build && npm run build:types && npm run build:js",
+        "build:types": "tsc --emitDeclarationOnly",
+        "build:js": "babel src --out-dir build --extensions \".ts,.tsx\" --source-maps inline"
     },
     "author": "Stephen Weiss <stephen.c.weiss@gmail.com>",
     "license": "MIT",
     "devDependencies": {
+        "@babel/cli": "^7.10.5",
+        "@babel/core": "^7.10.5",
+        "@babel/plugin-proposal-class-properties": "^7.10.4",
+        "@babel/plugin-transform-runtime": "^7.10.5",
+        "@babel/preset-env": "^7.10.4",
+        "@babel/preset-typescript": "^7.10.4",
         "husky": "^4.2.5",
         "lint-staged": "^10.2.11",
         "prettier": "^2.0.5",
@@ -28,6 +38,7 @@
         "chalk": "^4.1.0",
         "commander": "^6.0.0",
         "dotenv": "^8.2.0",
+        "gray-matter": "^4.0.2",
         "inquirer": "^7.3.2"
     },
     "husky": {
