@@ -45,3 +45,23 @@ If you run into a `permission denied` error, make sure the script is executable:
 zsh: permission denied: note-mgr
 $ chmod +x index.js
 ```
+
+## Reading Commit Logs
+
+This project follows [SemVer](https://semver.org/) and an adaptation of the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/#specification) standard.
+
+Commits are prefixed with the following emoji to indicate their purpose.
+
+| Symbol | Interpretation           |
+| ------ | ------------------------ |
+| ✨     | feature                  |
+| 🐛     | fix                      |
+| 💅     | style                    |
+| 🧼     | chore                    |
+| 📝     | docs                     |
+| 🐎     | perf                     |
+| 🧪     | test                     |
+| 🏗️     | refactor                 |
+| 🧰     | tooling / infrastructure |
+| 🚀     | major version bump       |
+| 📦     | minor version bump       |
