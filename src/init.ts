@@ -2,7 +2,7 @@ import path from "path"
 const fs = require("fs")
 import { prompt } from "inquirer"
 import { Command } from "commander"
-import { Config, HOME, NOTES_ROOT_DIR } from "./utils"
+import { Config, HOME, ConfigurationKeys } from "./utils"
 
 const fsPromises = fs.promises
 
@@ -41,15 +41,14 @@ class NoteManagerConfigurer extends Config {
      * A final step is to save the results to the note-mgr config file.
      */
     configure(): void {
-        const notesDir = `${this.targetPath}/notes`
+        this.configureSettings()
         fsPromises
             .access(this.targetPath)
             .catch(() => {
-                this.createNotesDir(notesDir)
+                this.createNotesDir()
             })
             .finally(() => {
-                this.initializeNotesCatalogue()
-                this.configureSettings()
+                this.initializeNotesIndexFile()
             })
     }
 
@@ -63,7 +62,10 @@ class NoteManagerConfigurer extends Config {
                     fsPromises
                         .access(this.CONFIG_PATH)
                         .then(() =>
-                            this.updateConfig(NOTES_ROOT_DIR, this.targetPath)
+                            this.updateConfig(
+                                ConfigurationKeys.NOTES_ROOT_DIR,
+                                this.targetPath
+                            )
                         )
                         .catch(
                             () =>
@@ -78,24 +80,29 @@ class NoteManagerConfigurer extends Config {
         })
     }
 
-    private createNotesDir(notesDir: string) {
-        const notesPath = path.resolve(HOME, notesDir)
+    /**
+     * Creates a directory in the targetDir to store notes
+     */
+    private createNotesDir() {
+        const notesPath = path.resolve(HOME, `${this.targetPath}/notes`)
         fs.mkdirSync(notesPath, { recursive: true })
     }
 
     /**
-     * The `.notes.md` file is a catalogue of all notes
+     * Creates an indexFile for the notes based on the configuration setting within the target directory
      */
-    private initializeNotesCatalogue() {
-        fs.writeFile(
-            `${this.targetPath}/${ConfigurationKeys.NOTES_INDEX_FILE}.md`,
-            "# Drafts\n\n# Notes\n",
-            (error: Error) => {
-                if (error)
-                    throw new Error(
-                        `Failed to create .notes.md at path ${path}.\n${error}`
-                    )
-            }
-        )
+    private async initializeNotesIndexFile() {
+        this.indexFile.then((idxFile) => {
+            fs.writeFile(
+                `${this.targetPath}/${idxFile}.md`,
+                "# Drafts\n\n# Notes\n",
+                (error: Error) => {
+                    if (error)
+                        throw new Error(
+                            `Failed to create ${idxFile}.md at path ${this.targetPath}.\n${error.message}`
+                        )
+                }
+            )
+        })
     }
 }
