@@ -1,28 +1,27 @@
-const path = require("path")
-const fs = require("fs")
+import path from "path"
+import fs from "fs"
+import { prompt } from "inquirer"
+import { Command } from "commander"
+import { Config, HOME } from "./utils"
 
 const fsPromises = fs.promises
 
-import { prompt } from "inquirer"
-import { Config, HOME, NOTES_ROOT_DIR } from "./utils"
+export async function init(commander: Command) {
+    const targetDir = commander.targetDir || (await solicitTarget())
+    new NoteManagerConfigurer(targetDir).configure()
+}
 
-export async function init(targetDir?: string) {
-    if (!targetDir) {
-        const questions = [
-            {
-                type: "input",
-                name: "targetDir",
-                message:
-                    "In which directory would you like to save your notes?\nThe path should be described relative to $HOME / USERPROFILE.\nNote: If the directory does not yet exist, it will be created.",
-                default: ".notes",
-            },
-        ]
-        await prompt(questions).then(
-            (answers) => (targetDir = String(answers.targetDir))
-        )
-    }
-    const configurer = new NoteManagerConfigurer(targetDir)
-    configurer.configure()
+async function solicitTarget() {
+    const questions = [
+        {
+            type: "input",
+            name: "targetDir",
+            message:
+                "In which directory would you like to save your notes?\nThe path should be described relative to $HOME / USERPROFILE.\nNote: If the directory does not yet exist, it will be created.",
+            default: ".notes",
+        },
+    ]
+    return await prompt(questions).then((answers) => answers.targetDir)
 }
 
 class NoteManagerConfigurer extends Config {
