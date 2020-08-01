@@ -18,15 +18,6 @@ enum FrontmatterKeys {
     Title = "Title",
 }
 
-// given a name for a file to create,
-// if it's interactive, pass any options received into the prompts
-// if it's not interactive, take the required title and move on to create the file
-// all new notes should get at a minimum a space for the frontmatter
-//
-
-// default file type comes from settings - i.e. read the config
-//
-
 export async function newNote(title: string | undefined, args: Command) {
     if (!title && !args.title && !args.interactive)
         return console.log(
@@ -228,24 +219,3 @@ function parseCustom(cliSetOptions: Map<any, any>, customArgs: string[]) {
         cliSetOptions.set(key, value)
     })
 }
-
-// import matter from "gray-matter"
-// import fs from "fs"
-// import path from "path"
-
-// const data = fs.readFileSync(path.resolve(__dirname, "../test/example.md"))
-// console.log(data)
-// console.log(matter(data))
-
-/**
- * Frontmatter
- * ---
-title: string
-date: date
-publish: date
-draft: boolean
-private: boolean
-category: string[]
-tags: string[]
----
- */
