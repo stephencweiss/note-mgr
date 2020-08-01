@@ -6,11 +6,7 @@ const fsPromises = fs.promises
 import { prompt } from "inquirer"
 import { Config, HOME, NOTES_ROOT_DIR } from "./utils"
 
-interface SetupOptions {
-    targetDir?: string
-}
-
-export async function setup({ targetDir }: SetupOptions) {
+export async function init(targetDir?: string) {
     if (!targetDir) {
         const questions = [
             {
@@ -25,7 +21,6 @@ export async function setup({ targetDir }: SetupOptions) {
             (answers) => (targetDir = String(answers.targetDir))
         )
     }
-    console.log({ targetDir })
     const configurer = new NoteManagerConfigurer(targetDir)
     configurer.configure()
 }
@@ -89,7 +84,6 @@ class NoteManagerConfigurer extends Config {
         fsPromises
             .access(notePath)
             .then(() => {
-                console.log(`${notePath} exists`)
                 fsPromises
                     .access(`${notePath}/.notes.md`)
                     .then(() => `${notePath}/.notes.md exists`)
@@ -110,7 +104,6 @@ class NoteManagerConfigurer extends Config {
      * The `.notes.md` file is a catalogue of all notes
      */
     private initializeNotesCatalogue(path: string) {
-        console.log(`path --> `, { path })
         fs.writeFile(
             `${path}/.notes.md`,
             "# Drafts\n\n# Notes\n",

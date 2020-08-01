@@ -1,6 +1,5 @@
 import { Command } from "commander"
-import { createDraft } from "./createDraft"
-import { setup } from "./setup"
+import { init } from "./init"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -10,14 +9,14 @@ function main() {
     program.version("0.0.1", "-v --version", "Current Version")
 
     program
-        .command("setup")
-        .alias("s")
-        .description("Setup the manager")
+        .command("init")
+        .alias("i")
+        .description("Initialize nom, the hungry note manager")
         .option(
             "-t --target-dir <directoryPath>",
             "The relative path to the target directory for notes"
         )
-        .action(setup)
+        .action(init)
     program
         .command("create-draft <note-title>")
         .alias("c")
