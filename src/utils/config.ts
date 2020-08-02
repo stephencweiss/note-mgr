@@ -5,25 +5,47 @@ const fs = require("fs")
 const fsPromises = fs.promises
 
 export const HOME = os.homedir()
-export const NOTES_ROOT_DIR = "NOTES_ROOT_DIR"
+
+enum ConfigurationKeys {
+    NOTES_ROOT_DIR = "NOTES_ROOT_DIR",
+    DEFAULT_FILE_EXTENSION = "DEFAULT_FILE_TYPE",
+    NOTES_INDEX_FILE = "NOTES_INDEX_FILE",
+    DEFAULT_DATE_FORMAT = "DEFAULT_DATE_FORMAT",
+}
+
+interface ConfigurationOptions {
+    targetDir: string
+    defaultDtFormat?: string
+    defaultFileExtension?: string
+    defaultIndexFile?: string
+}
 
 export class Config {
     CONFIG_PATH = path.resolve(HOME, ".note-mgr")
     protected targetPath = ""
-    constructor(targetDir?: string) {
-        this.targetPath = path.resolve(HOME, targetDir || ".notes")
-        this.initializeConfig(this.targetPath).catch(() =>
-            console.log(`Failed to Initialize Config. Please try again.`)
-        )
-    }
+    protected defaultDtFormat = "YYYY-MM-DD"
+    protected defaultFileExtension = "md"
+    protected defaultIndexFile = ".contents"
+    // constructor(targetDir?: string) {
+    //     this.targetPath = path.resolve(HOME, targetDir || ".notes")
+    // }
 
     /**
      * If the configuration for `note-mgr` doesn't already exist, initialize it
      */
-    async initializeConfig(targetPath: string = ".notes") {
+    async init({
+        defaultDtFormat = this.defaultDtFormat,
+        defaultFileExtension = this.defaultFileExtension,
+        defaultIndexFile = this.defaultIndexFile,
+        targetDir,
+    }: ConfigurationOptions) {
+        this.targetPath = path.resolve(HOME, targetDir || ".notes")
         fsPromises.access(this.CONFIG_PATH).catch(() => {
             const baseConfig = new Map()
-            baseConfig.set(NOTES_ROOT_DIR, targetPath)
+            baseConfig.set(ConfigurationKeys.DEFAULT_DATE_FORMAT, defaultDtFormat)
+            baseConfig.set(ConfigurationKeys.DEFAULT_FILE_EXTENSION, defaultFileExtension)
+            baseConfig.set(ConfigurationKeys.NOTES_ROOT_DIR, this.targetPath)
+            baseConfig.set(ConfigurationKeys.NOTES_INDEX_FILE, defaultIndexFile)
             this.writeConfig(baseConfig)
         })
     }
@@ -38,15 +60,13 @@ export class Config {
             readStream.on("error", (error: Error) => reject(error))
             readStream.on("end", () =>
                 resolve(
-                    data
-                        .split("\n")
-                        .reduce((acc: Map<string, string>, cur: string) => {
-                            const [key, val] = cur.split("=")
-                            if (key && val) {
-                                acc.set(key, val)
-                            }
-                            return acc
-                        }, new Map())
+                    data.split("\n").reduce((acc: Map<string, string>, cur: string) => {
+                        const [key, val] = cur.split("=")
+                        if (key && val) {
+                            acc.set(key, val)
+                        }
+                        return acc
+                    }, new Map())
                 )
             )
         })
@@ -75,5 +95,50 @@ export class Config {
         writeStream.on("end", () => {
             console.log(`Successfully updated config`)
         })
+    }
+
+    /** Common accessors of the config */
+    /**
+     * The nomRootPath getter returns a promise for the path to the directory housing all of `nom` relative to $HOME / USERPROFILE
+     */
+    get nomRootPath() {
+        return path.resolve(
+            HOME,
+            this.readConfig().then((config) => config.get(ConfigurationKeys.NOTES_ROOT_DIR))
+        )
+    }
+    /**
+     * The nomNotesPath getter returns a promise for the path to the `nom` directory of Notes relative to $HOME / USERPROFILE
+     */
+    get nomNotesPath() {
+        return this.readConfig().then((config) =>
+            path.resolve(HOME, `${config.get(ConfigurationKeys.NOTES_ROOT_DIR)}/notes`)
+        )
+    }
+    /**
+     * The defaultDateFormat returns a promise for the default file extension set for the all new notes
+     */
+    get defaultDateFormat() {
+        return this.readConfig().then((config) => config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT))
+    }
+    /**
+     * The defaultFileExt returns a promise for the default file extension set for the all new notes
+     */
+    get defaultFileExt() {
+        return this.readConfig().then((config) => config.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION))
+    }
+
+    /**
+     * indexFile returns a promise for the name of the index file (default is `.contents`) that will store a reference to all notes
+     */
+    get indexFile() {
+        return this.readConfig().then((config) => config.get(ConfigurationKeys.NOTES_INDEX_FILE))
+    }
+
+    /**
+     * indexPath returns a promise for the path to the index file relative to $HOME / USERPROFILE
+     */
+    async indexPath() {
+        return path.resolve(HOME, await this.indexFile)
     }
 }

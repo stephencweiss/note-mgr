@@ -1,5 +1,6 @@
 import { Command } from "commander"
 import { init } from "./init"
+import { newNote } from "./newNote"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -18,12 +19,24 @@ function main() {
         )
         .action(init)
     program
-        .command("create-draft <note-title>")
-        .alias("c")
+        .command("new [note-title]")
+        .alias("n")
+        .option("-c --category <category...>", "The frontmatter for category")
+        .option("-d --date <date>", "The frontmatter for publish")
+        .option(
+            "-f --file-extension <file-extension>",
+            "The file type for the note"
+        )
+        .option("-i --interactive", "Interactively publish a note")
+        .option("-p --publish <date>", "The frontmatter for publish")
+        .option("-s --slug <slug>", "The frontmatter for the slug")
+        .option("--title <title>", "The frontmatter for the title")
+        .option("--custom [key:value...]", "Custom frontmatter")
+        .option("--private", "The frontmatter for private", false)
+        .option("-t --tags <tag...>", "The frontmatter for the title")
         .description("Creates a new draft note")
-        .action((noteTitle) => {
-            console.log(`Add draft creation here for ${noteTitle}`)
-            createDraft(noteTitle)
+        .action((noteTitle, args) => {
+            newNote(noteTitle, args)
         })
     program
         .command("last-published")
@@ -37,10 +50,13 @@ function main() {
         .alias("p")
         .description("Publish a note")
         .option("-c --category <category>", "The frontmatter for category")
+        .option("-d --date <date>", "The frontmatter for publish")
+        .option("-i --interactive", "Interactively publish a note")
         .option("-p --publish <date>", "The frontmatter for publish")
         .option("-t --title <title>", "The frontmatter for the title")
+        .option("--custom [key:value...]", "Custom frontmatter")
+        .option("--private", "The frontmatter for private", false)
         .option("--tags <tag...>", "The frontmatter for the title")
-        .option("-i --interactive", "Interactively publish a note")
         .action((noteTitle, args) => {
             const { category, publish, title, tags } = args
             console.log(

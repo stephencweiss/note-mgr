@@ -1,118 +1,71 @@
-const path = require("path")
+import path from "path"
 const fs = require("fs")
+import { prompt } from "inquirer"
+import { Command } from "commander"
+import { Config, HOME } from "./utils"
 
 const fsPromises = fs.promises
 
-import { prompt } from "inquirer"
-import { Config, HOME, NOTES_ROOT_DIR } from "./utils"
-
-export async function init(targetDir?: string) {
-    if (!targetDir) {
-        const questions = [
-            {
-                type: "input",
-                name: "targetDir",
-                message:
-                    "In which directory would you like to save your notes?\nThe path should be described relative to $HOME / USERPROFILE.\nNote: If the directory does not yet exist, it will be created.",
-                default: ".notes",
-            },
-        ]
-        await prompt(questions).then(
-            (answers) => (targetDir = String(answers.targetDir))
-        )
-    }
-    const configurer = new NoteManagerConfigurer(targetDir)
+export async function init(commander: Command) {
+    const configurer = new NoteManagerConfigurer()
+    const targetDir = commander.targetDir || (await solicitTarget())
+    configurer.init({ targetDir })
     configurer.configure()
 }
 
-class NoteManagerConfigurer extends Config {
-    constructor(targetDir?: string) {
-        super(targetDir)
-    }
+async function solicitTarget() {
+    const questions = [
+        {
+            type: "input",
+            name: "targetDir",
+            message:
+                "In which directory would you like to save your notes?\nThe path should be described relative to $HOME / USERPROFILE.\nNote: If the directory does not yet exist, it will be created.",
+            default: ".notes",
+        },
+    ]
+    return await prompt(questions).then((answers) => answers.targetDir)
+}
 
-    /**
-     * Configures note-mgr.
-     * First determines if the necessary directories and files for the application exist.
-     * If they do not, this method creates any missed directories or files.
-     * The desired file structure is as follows:
-     * .
-     * └── targetDir
-     *     └── notes
-     *         └── .notes.md
-     * A final step is to save the results to the note-mgr config file.
-     */
+/**
+ * Configures note-mgr.
+ * First determines if the necessary directories and files for the application exist.
+ * If they do not, this method creates any missed directories or files.
+ * The desired file structure is as follows:
+ * .
+ * └── targetDir
+ *     └── .contents.md
+ *     └── notes
+ * A final step is to save the results to the note-mgr config file.
+ */
+class NoteManagerConfigurer extends Config {
     configure(): void {
-        const notesDir = `${this.targetPath}/notes`
         fsPromises
             .access(this.targetPath)
-            .then(() => {
-                this.notesExists(notesDir)
-            })
             .catch(() => {
-                this.createNotesDir(notesDir)
+                this.createNotesDir()
             })
-            .finally(() => this.configureSettings())
+            .finally(() => {
+                this.initializeNotesIndexFile()
+            })
     }
 
     /**
-     * Saves the targetDir to a config file in the home directory, `.note-mgr`
+     * Creates a directory in the targetDir to store notes
      */
-    private configureSettings(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            try {
-                resolve(
-                    fsPromises
-                        .access(this.CONFIG_PATH)
-                        .then(() =>
-                            this.updateConfig(NOTES_ROOT_DIR, this.targetPath)
-                        )
-                        .catch(
-                            () =>
-                                new Error(
-                                    `Failed to Configure Settings with Target. Please try again.`
-                                )
-                        )
-                )
-            } catch (error) {
-                reject(error)
-            }
-        })
-    }
-
-    notesExists(noteDir: string) {
-        const notePath = path.resolve(HOME, noteDir)
-        fsPromises
-            .access(notePath)
-            .then(() => {
-                fsPromises
-                    .access(`${notePath}/.notes.md`)
-                    .then(() => `${notePath}/.notes.md exists`)
-                    .catch(() => this.initializeNotesCatalogue(notePath))
-            })
-            .catch(() => {
-                this.createNotesDir(noteDir)
-            })
-    }
-
-    private createNotesDir(notesDir: string) {
-        const notesPath = path.resolve(HOME, notesDir)
+    private createNotesDir() {
+        const notesPath = path.resolve(HOME, `${this.targetPath}/notes`)
         fs.mkdirSync(notesPath, { recursive: true })
-        this.initializeNotesCatalogue(notesPath)
     }
 
     /**
-     * The `.notes.md` file is a catalogue of all notes
+     * Creates an indexFile for the notes based on the configuration setting within the target directory
      */
-    private initializeNotesCatalogue(path: string) {
-        fs.writeFile(
-            `${path}/.notes.md`,
-            "# Drafts\n\n# Notes\n",
-            (error: Error) => {
+    private async initializeNotesIndexFile() {
+        this.indexFile.then((idxFile) => {
+            fs.writeFile(`${this.targetPath}/${idxFile}.md`, "# Drafts\n\n# Notes\n", (error: Error) => {
                 if (error)
-                    throw new Error(
-                        `Failed to create .notes.md at path ${path}.\n${error}`
-                    )
-            }
-        )
+                    throw new Error(`Failed to create ${idxFile}.md at path ${this.targetPath}.\n${error.message}`)
+            })
+        })
     }
 }
