@@ -2,13 +2,15 @@ import path from "path"
 const fs = require("fs")
 import { prompt } from "inquirer"
 import { Command } from "commander"
-import { Config, HOME, ConfigurationKeys } from "./utils"
+import { Config, HOME } from "./utils"
 
 const fsPromises = fs.promises
 
 export async function init(commander: Command) {
+    const configurer = new NoteManagerConfigurer()
     const targetDir = commander.targetDir || (await solicitTarget())
-    new NoteManagerConfigurer(targetDir).configure()
+    configurer.init({ targetDir })
+    configurer.configure()
 }
 
 async function solicitTarget() {
@@ -24,24 +26,19 @@ async function solicitTarget() {
     return await prompt(questions).then((answers) => answers.targetDir)
 }
 
+/**
+ * Configures note-mgr.
+ * First determines if the necessary directories and files for the application exist.
+ * If they do not, this method creates any missed directories or files.
+ * The desired file structure is as follows:
+ * .
+ * └── targetDir
+ *     └── .contents.md
+ *     └── notes
+ * A final step is to save the results to the note-mgr config file.
+ */
 class NoteManagerConfigurer extends Config {
-    constructor(targetDir?: string) {
-        super(targetDir)
-    }
-
-    /**
-     * Configures note-mgr.
-     * First determines if the necessary directories and files for the application exist.
-     * If they do not, this method creates any missed directories or files.
-     * The desired file structure is as follows:
-     * .
-     * └── targetDir
-     *     └── .contents.md
-     *     └── notes
-     * A final step is to save the results to the note-mgr config file.
-     */
     configure(): void {
-        this.configureSettings()
         fsPromises
             .access(this.targetPath)
             .catch(() => {
@@ -50,34 +47,6 @@ class NoteManagerConfigurer extends Config {
             .finally(() => {
                 this.initializeNotesIndexFile()
             })
-    }
-
-    /**
-     * Saves the targetDir to a config file in the home directory, `.note-mgr`
-     */
-    private configureSettings(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            try {
-                resolve(
-                    fsPromises
-                        .access(this.CONFIG_PATH)
-                        .then(() =>
-                            this.updateConfig(
-                                ConfigurationKeys.NOTES_ROOT_DIR,
-                                this.targetPath
-                            )
-                        )
-                        .catch(
-                            () =>
-                                new Error(
-                                    `Failed to Configure Settings with Target. Please try again.`
-                                )
-                        )
-                )
-            } catch (error) {
-                reject(error)
-            }
-        })
     }
 
     /**
@@ -93,16 +62,10 @@ class NoteManagerConfigurer extends Config {
      */
     private async initializeNotesIndexFile() {
         this.indexFile.then((idxFile) => {
-            fs.writeFile(
-                `${this.targetPath}/${idxFile}.md`,
-                "# Drafts\n\n# Notes\n",
-                (error: Error) => {
-                    if (error)
-                        throw new Error(
-                            `Failed to create ${idxFile}.md at path ${this.targetPath}.\n${error.message}`
-                        )
-                }
-            )
+            fs.writeFile(`${this.targetPath}/${idxFile}.md`, "# Drafts\n\n# Notes\n", (error: Error) => {
+                if (error)
+                    throw new Error(`Failed to create ${idxFile}.md at path ${this.targetPath}.\n${error.message}`)
+            })
         })
     }
 }
