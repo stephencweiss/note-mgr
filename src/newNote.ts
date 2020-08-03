@@ -18,6 +18,16 @@ enum FrontmatterKeys {
     Title = "Title",
 }
 
+interface Frontmatter {
+    title: string
+    slug: string
+    category: string[]
+    tags: string[]
+    date: string
+    publish: string
+    private: boolean
+}
+
 export async function newNote(title: string | undefined, args: Command) {
     if (!title && !args.title && !args.interactive)
         return console.log(
@@ -99,6 +109,7 @@ async function solicitOptions(
             },
             filter: (args: any) => dayjs(args).format(defaultDateFmt),
         },
+        // todo: figure out if I like the confirm vs the list experience
         {
             type: "confirm",
             name: "AltPrivate",

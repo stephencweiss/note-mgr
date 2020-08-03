@@ -64,9 +64,10 @@ class NoteManagerConfigurer extends Config {
         const indexFile = this.readConfig().get(
             ConfigurationKeys.NOTES_INDEX_FILE
         )
+        const baseIndex = `| Title | Date | Publish | Private |\n| --- | --- | --- | --- |\n`
         fs.writeFile(
             `${this.targetPath}/${indexFile}.md`,
-            "# Drafts\n\n# Notes\n",
+            baseIndex,
             (error: Error) => {
                 if (error)
                     throw new Error(

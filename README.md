@@ -1,6 +1,6 @@
 # Note-Mgr (nom for short)
 
-A CLI for managing drafts, ideas, and notes.
+A CLI for managing drafts, ideas, and notes for publishing on the web.
 
 `note-mgr`, aka `nom`, is hungry to help you stay organized by managing your notes for you.
 
@@ -13,8 +13,8 @@ A CLI for managing drafts, ideas, and notes.
 ## Usage
 
 -   `-i --init` initialize `nom`
--   **WIP** `-c --create-draft <note-title>` will create a new draft and add it to the `.ideas` list
--   **WIP** `-p --publish <note-title>` will publish the draft, remove it from the `.ideas` list, prompt for frontmatter
+-   **WIP** `-n --new <note-title>` will create a new draft and add it to the `.contents` list
+-   **WIP** `-p --publish <note-title>` will publish the draft, prompt for frontmatter
 -   **WIP** `-l --last-published` will interrogate the notes folder to find the latest `publish` date among the notes
 
 ## Installation
