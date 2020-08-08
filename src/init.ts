@@ -2,7 +2,7 @@ import path from "path"
 const fs = require("fs")
 import { prompt } from "inquirer"
 import { Command } from "commander"
-import { Config, HOME } from "./utils"
+import { Config, HOME, ConfigurationKeys } from "./utils"
 
 const fsPromises = fs.promises
 
@@ -61,11 +61,18 @@ class NoteManagerConfigurer extends Config {
      * Creates an indexFile for the notes based on the configuration setting within the target directory
      */
     private async initializeNotesIndexFile() {
-        this.indexFile.then((idxFile) => {
-            fs.writeFile(`${this.targetPath}/${idxFile}.md`, "# Drafts\n\n# Notes\n", (error: Error) => {
+        const indexFile = this.readConfig().get(
+            ConfigurationKeys.NOTES_INDEX_FILE
+        )
+        fs.writeFile(
+            `${this.targetPath}/${indexFile}.md`,
+            "# Drafts\n\n# Notes\n",
+            (error: Error) => {
                 if (error)
-                    throw new Error(`Failed to create ${idxFile}.md at path ${this.targetPath}.\n${error.message}`)
-            })
-        })
+                    throw new Error(
+                        `Failed to create ${indexFile}.md at path ${this.targetPath}.\n${error.message}`
+                    )
+            }
+        )
     }
 }

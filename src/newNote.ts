@@ -3,7 +3,7 @@ import { prompt } from "inquirer"
 import dayjs from "dayjs"
 import chalk from "chalk"
 import kebabCase from "lodash.kebabcase"
-import { Config, validateDt } from "./utils"
+import { Config, ConfigurationKeys, validateDt } from "./utils"
 import { Command } from "commander"
 require("dotenv").config()
 const fsPromises = fs.promises
@@ -26,17 +26,21 @@ export async function newNote(title: string | undefined, args: Command) {
             )
         )
 
-    const config = await new Config()
-    const options = await parseOptions(args, config)
+    const config = new Config()
+    const configSettings = config.readConfig()
+
+    const options = parseOptions(args, configSettings)
     if (args.interactive) {
-        await solicitOptions(title, config, options)
+        await solicitOptions(title, configSettings, options)
     }
 
-    const notes = (await config.nomNotesPath) as string
-    const file = (options.get(FrontmatterKeys.Slug) ||
-        kebabCase(options.get(FrontmatterKeys.Title))) as string
-    const ext = (options.get("FileExtension") ||
-        (await config.defaultFileExt)) as string
+    const notes = config.nomNotesPath
+    const file =
+        options.get(FrontmatterKeys.Slug) ||
+        kebabCase(options.get(FrontmatterKeys.Title))
+    const ext =
+        options.get("FileExtension") ||
+        configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
     const combinedPath = `${notes}/${file}.${ext}`
     createNote(combinedPath, options)
     // todo: add it to `.notes`
@@ -44,10 +48,10 @@ export async function newNote(title: string | undefined, args: Command) {
 
 async function solicitOptions(
     title: string | undefined,
-    config: Config,
+    config: Map<ConfigurationKeys, any>,
     options: Map<any, any>
 ) {
-    const defaultDateFmt = await config.defaultDateFormat
+    const defaultDateFmt = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const questions = [
         {
             type: "input",
@@ -113,7 +117,7 @@ async function solicitOptions(
             type: "input",
             name: "FileExtension",
             message: "What's the file extension?",
-            default: config.defaultFileExt,
+            default: config.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION),
         },
     ]
 
@@ -173,8 +177,8 @@ function genFrontmatter(options: Map<any, any>) {
     `
 }
 
-async function parseOptions(args: any, config: Config) {
-    const defaultDateFormat = await config.defaultDateFormat
+function parseOptions(args: any, config: Map<ConfigurationKeys, string>) {
+    const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const TODAY = dayjs().format("YYYY-MM-DD")
     const title = args.args[0] || args.title
     const slug = args.slug || kebabCase(title)
