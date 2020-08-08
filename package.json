@@ -7,7 +7,8 @@
         "nom": "index.js"
     },
     "scripts": {
-        "lint:check": "npx prettier --config .prettierrc.js --check **/*",
+        "lint:check": "prettier --config .prettierrc.js --check 'src/**/*{.ts, .js}'",
+        "lint:fix": "prettier --config .prettierrc.js --write 'src/**/*{.ts, .js}' ",
         "start": "node index.js",
         "type-check": "tsc --noEmit",
         "type-check:watch": "npm run type-check -- --watch",
@@ -50,8 +51,8 @@
         }
     },
     "lint-staged": {
-        "**/*": [
-            "prettier --config .prettierrc.js --write"
+        "src/**/*": [
+            "yarn lint:fix"
         ]
     }
 }
