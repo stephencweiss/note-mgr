@@ -13,7 +13,7 @@ A CLI for managing drafts, ideas, and notes for publishing on the web.
 ## Usage
 
 -   `-i --init` initialize `nom`
--   **WIP** `-n --new <note-title>` will create a new draft and add it to the `.contents` list
+-   `-n --new <note-title>` will create a new draft and add it to the `.contents` list
 -   **WIP** `-p --publish <note-title>` will publish the draft, prompt for frontmatter
 -   **WIP** `-l --last-published` will interrogate the notes folder to find the latest `publish` date among the notes
 
