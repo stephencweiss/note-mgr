@@ -3,30 +3,16 @@ import { prompt } from "inquirer"
 import dayjs from "dayjs"
 import chalk from "chalk"
 import kebabCase from "lodash.kebabcase"
-import { Config, ConfigurationKeys, validateDt } from "./utils"
+import {
+    Config,
+    ConfigurationKeys,
+    FrontmatterKeys,
+    validateDt,
+    Content,
+} from "./utils"
 import { Command } from "commander"
 require("dotenv").config()
 const fsPromises = fs.promises
-
-enum FrontmatterKeys {
-    Category = "Category",
-    Date = "DateKey",
-    PrivateKey = "PrivateKey",
-    Publish = "Publish",
-    Slug = "Slug",
-    Tags = "Tags",
-    Title = "Title",
-}
-
-interface Frontmatter {
-    title: string
-    slug: string
-    category: string[]
-    tags: string[]
-    date: string
-    publish: string
-    private: boolean
-}
 
 export async function newNote(title: string | undefined, args: Command) {
     if (!title && !args.title && !args.interactive)
