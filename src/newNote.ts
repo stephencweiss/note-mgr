@@ -185,9 +185,12 @@ function generateFilePath(
 
 function genFrontmatter(options: Map<FrontmatterKeys, any>) {
     let frontmatter = ""
+
     for (let [key, val] of options) {
         if (key === "PrivateKey") {
-            frontmatter += `Private: ${val}` // special handling due to private being a restricted word in JS
+            frontmatter += `Private: ${val}` // special handling due to Private being a restricted word in JS
+        } else if (key === "DateKey") {
+            frontmatter += `Date: ${val}` // special handling due to Date being a restricted word in JS
         } else if (typeof val === "string") {
             frontmatter += `${key}: "${val}"`
         } else if (Array.isArray(val)) {
@@ -250,7 +253,7 @@ function parseOptions(
 }
 
 function updateOptions(
-    optionsMap: Map<any, any>,
+    optionsMap: Map<FrontmatterKeys | any, any>,
     key: FrontmatterKeys | "FileExtension",
     value?: any
 ) {
@@ -261,7 +264,10 @@ function updateOptions(
     optionsMap.set(key, value)
 }
 
-function parseCustom(cliSetOptions: Map<any, any>, customArgs: string[]) {
+function parseCustom(
+    cliSetOptions: Map<FrontmatterKeys | any, any>,
+    customArgs: string[]
+) {
     customArgs?.map((el) => {
         const [key, value] = el.split(":")
         cliSetOptions.set(key, value)
