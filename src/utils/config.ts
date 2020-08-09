@@ -1,8 +1,8 @@
+import chalk from "chalk"
+
 const os = require("os")
 const path = require("path")
 const fs = require("fs")
-
-const fsPromises = fs.promises
 
 export const HOME = os.homedir()
 
@@ -48,7 +48,20 @@ export class Config {
         this.writeConfig(baseConfig)
     }
 
+    configExists(): void {
+        try {
+            fs.accessSync(this.CONFIG_PATH)
+        } catch {
+            throw new Error(
+                chalk.bold.red(
+                    `Config doesn't exist at ${this.CONFIG_PATH}. Have you run init?`
+                )
+            )
+        }
+    }
+
     readConfig(): Map<ConfigurationKeys, string> {
+        this.configExists()
         const configContents = fs.readFileSync(this.CONFIG_PATH, {
             encoding: "utf8",
         })
