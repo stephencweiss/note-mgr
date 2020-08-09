@@ -11,6 +11,17 @@
             "skipFiles": ["<node_internals>/**"],
             "program": "${workspaceFolder}/index.js",
             "outFiles": ["${workspaceFolder}/**/*.js"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch TS Node",
+            "program": "${workspaceFolder}/build/src/index.js",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/build/**/*.js",
+                "!**/node_modules/**"
+            ]
         }
     ]
 }
