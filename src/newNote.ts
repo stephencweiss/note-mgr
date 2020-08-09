@@ -28,6 +28,14 @@ export async function newNote(title: string | undefined, args: Command) {
     if (args.interactive) {
         await solicitOptions(title, configSettings, options)
     }
+
+    if (!options.has(FrontmatterKeys.Slug)) {
+        updateOptions(
+            options,
+            FrontmatterKeys.Slug,
+            kebabCase(options.get(FrontmatterKeys.Title))
+        )
+    }
     console.log({ options })
     createNote(config, options)
     new Content().addNote(options)
