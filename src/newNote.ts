@@ -219,6 +219,10 @@ function updateOptions(
     key: FrontmatterKeys | "FileExtension",
     value?: any
 ) {
+    if (value === undefined || value === null) return
+    if (key === FrontmatterKeys.Category || key === FrontmatterKeys.Tags) {
+        return optionsMap.set(key, [value])
+    }
     optionsMap.set(key, value)
 }
 
