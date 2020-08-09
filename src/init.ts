@@ -4,6 +4,7 @@ const fs = require("fs")
 import { prompt } from "inquirer"
 import { Command } from "commander"
 import { Config, HOME, ConfigurationKeys } from "./utils"
+import { ContentHeaders } from "./utils"
 
 const fsPromises = fs.promises
 
@@ -68,10 +69,14 @@ class NoteManagerConfigurer extends Config {
             ConfigurationKeys.NOTES_INDEX_FILE
         )
 
-        const baseIndex = `| Title | Date | Publish | Private |\n| --- | --- | --- | --- |\n`
+        const headers: ContentHeaders[] = ["title", "date", "stage"]
+        const body = `| ${headers.join("|")} |\n | ${headers
+            .map((_) => `---`)
+            .join("|")}|\n`
+
         fs.writeFile(
             `${this.targetPath}/${indexFile}.md`,
-            baseIndex,
+            body,
             (error: Error) => {
                 if (error)
                     throw new Error(
