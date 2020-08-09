@@ -6,9 +6,10 @@ import kebabCase from "lodash.kebabcase"
 import {
     Config,
     ConfigurationKeys,
+    Content,
+    DocumentStages,
     FrontmatterKeys,
     validateDt,
-    Content,
 } from "./utils"
 import { Command } from "commander"
 require("dotenv").config()
@@ -79,8 +80,10 @@ async function solicitOptions(
         {
             type: "input",
             name: FrontmatterKeys.Category,
-            message: "What's the category for the note?",
+            message: "What's the category for the note? (Comma separated",
             default: options.get("category"),
+            filter: (args: any) =>
+                args.split(",").map((tag: string) => tag.trim()),
         },
         {
             type: "input",
@@ -95,9 +98,6 @@ async function solicitOptions(
             name: FrontmatterKeys.Date,
             message: "What is the date for the note?",
             default: dayjs().format(defaultDateFmt),
-            validate: (args: string) => {
-                validateDt(args, defaultDateFmt)
-            },
             filter: (args: any) => dayjs(args).format(defaultDateFmt),
         },
         {
@@ -105,16 +105,7 @@ async function solicitOptions(
             name: FrontmatterKeys.Publish,
             message: "What is the publish date for the note?",
             default: dayjs().format(defaultDateFmt),
-            validate: (args: string) => {
-                validateDt(args, defaultDateFmt)
-            },
             filter: (args: any) => dayjs(args).format(defaultDateFmt),
-        },
-        // todo: figure out if I like the confirm vs the list experience
-        {
-            type: "confirm",
-            name: "AltPrivate",
-            message: "Is the note public?",
         },
         {
             type: "list",
@@ -123,6 +114,26 @@ async function solicitOptions(
             choices: [
                 { value: false, name: "No" },
                 { value: true, name: "Yes" },
+            ],
+        },
+        {
+            type: "list",
+            name: FrontmatterKeys.Stage,
+            message: "What's the stage of the document?",
+            choices: [
+                { value: DocumentStages.Draft, name: DocumentStages.Draft },
+                {
+                    value: DocumentStages.In_Review,
+                    name: DocumentStages.In_Review,
+                },
+                {
+                    value: DocumentStages.Ready_For_Review,
+                    name: DocumentStages.Ready_For_Review,
+                },
+                {
+                    value: DocumentStages.Published,
+                    name: DocumentStages.Published,
+                },
             ],
         },
         {
@@ -190,12 +201,23 @@ function genFrontmatter(options: Map<FrontmatterKeys, any>) {
     `
 }
 
-function parseOptions(args: any, config: Map<ConfigurationKeys, string>) {
+function parseOptions(
+    args: any,
+    config: Map<ConfigurationKeys, string>
+): Map<FrontmatterKeys, any> {
     const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const TODAY = dayjs().format("YYYY-MM-DD")
     const title = args.args[0] || args.title
     const slug = args.slug || kebabCase(title)
-    const { category, date, private: privateKey, publish, tags, custom } = args
+    const {
+        category,
+        date,
+        private: privateKey,
+        publish,
+        stage,
+        tags,
+        custom,
+    } = args
 
     let cliSetOptions = new Map()
 
@@ -217,6 +239,11 @@ function parseOptions(args: any, config: Map<ConfigurationKeys, string>) {
         (validateDt(publish, defaultDateFormat) && publish) || TODAY
     )
     updateOptions(cliSetOptions, FrontmatterKeys.Slug, slug)
+    updateOptions(
+        cliSetOptions,
+        FrontmatterKeys.Stage,
+        stage || DocumentStages.Draft
+    )
     updateOptions(cliSetOptions, FrontmatterKeys.Tags, tags)
     parseCustom(cliSetOptions, custom)
     return cliSetOptions
