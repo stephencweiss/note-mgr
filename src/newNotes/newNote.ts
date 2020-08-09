@@ -1,4 +1,4 @@
-const fs = require("fs")
+import fs from "fs"
 import chalk from "chalk"
 import kebabCase from "lodash.kebabcase"
 import { Config, Content, FrontmatterKeys } from "../utils"

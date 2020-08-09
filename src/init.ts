@@ -1,6 +1,5 @@
-import chalk from "chalk"
 import path from "path"
-const fs = require("fs")
+import fs from "fs"
 import { prompt } from "inquirer"
 import { Command } from "commander"
 import { Config, HOME, ConfigurationKeys } from "./utils"

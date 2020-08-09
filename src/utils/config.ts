@@ -1,8 +1,7 @@
 import chalk from "chalk"
-
-const os = require("os")
-const path = require("path")
-const fs = require("fs")
+import os from "os"
+import path from "path"
+import fs from "fs"
 
 export const HOME = os.homedir()
 
