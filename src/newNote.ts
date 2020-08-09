@@ -24,22 +24,29 @@ export async function newNote(title: string | undefined, args: Command) {
 
     const config = new Config()
     const configSettings = config.readConfig()
-
     const options = parseOptions(args, configSettings)
     if (args.interactive) {
         await solicitOptions(title, configSettings, options)
     }
+    console.log({ options })
+    createNote(config, options)
+    new Content().addNote(options)
+    console.log(`Note added!`)
+    // todo: add it to `.notes`
+}
 
-    const notes = config.nomNotesPath
-    const file =
+function generateFilePath(
+    config: Config,
+    options: Map<FrontmatterKeys | "FileExtension", any>
+): string {
+    const configSettings = config.readConfig()
+    return `${config.nomNotesPath}/${
         options.get(FrontmatterKeys.Slug) ||
         kebabCase(options.get(FrontmatterKeys.Title))
-    const ext =
+    }.${
         options.get("FileExtension") ||
         configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
-    const combinedPath = `${notes}/${file}.${ext}`
-    createNote(combinedPath, options)
-    // todo: add it to `.notes`
+    }`
 }
 
 async function solicitOptions(
@@ -130,9 +137,10 @@ async function solicitOptions(
     })
 }
 
-async function createNote(filePath: string, options: Map<any, any>) {
-    // const noteIndex = config.get(ConfigurationKeys.NOTES_INDEX_FILE) // don't need this here, need it in the function that adds to the indexFile
+async function createNote(config: Config, options: Map<any, any>) {
+    const filePath = generateFilePath(config, options)
 
+    // const noteIndex = config.get(ConfigurationKeys.NOTES_INDEX_FILE) // don't need this here, need it in the function that adds to the indexFile
     fsPromises
         .access(filePath)
         .then(() =>
@@ -156,7 +164,7 @@ async function createNote(filePath: string, options: Map<any, any>) {
         })
 }
 
-function genFrontmatter(options: Map<any, any>) {
+function genFrontmatter(options: Map<FrontmatterKeys, any>) {
     let frontmatter = ""
     for (let [key, val] of options) {
         if (key === "PrivateKey") {
