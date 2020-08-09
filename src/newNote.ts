@@ -44,20 +44,6 @@ export async function newNote(title: string | undefined, args: Command) {
     // todo: add it to `.notes`
 }
 
-function generateFilePath(
-    config: Config,
-    options: Map<FrontmatterKeys | "FileExtension", any>
-): string {
-    const configSettings = config.readConfig()
-    return `${config.nomNotesPath}/${
-        options.get(FrontmatterKeys.Slug) ||
-        kebabCase(options.get(FrontmatterKeys.Title))
-    }.${
-        options.get("FileExtension") ||
-        configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
-    }`
-}
-
 async function solicitOptions(
     title: string | undefined,
     config: Map<ConfigurationKeys, any>,
@@ -181,6 +167,20 @@ async function createNote(config: Config, options: Map<any, any>) {
                 }
             )
         })
+}
+
+function generateFilePath(
+    config: Config,
+    options: Map<FrontmatterKeys | "FileExtension", any>
+): string {
+    const configSettings = config.readConfig()
+    return `${config.nomNotesPath}/${
+        options.get(FrontmatterKeys.Slug) ||
+        kebabCase(options.get(FrontmatterKeys.Title))
+    }.${
+        options.get("FileExtension") ||
+        configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
+    }`
 }
 
 function genFrontmatter(options: Map<FrontmatterKeys, any>) {
