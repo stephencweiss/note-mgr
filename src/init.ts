@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import path from "path"
 const fs = require("fs")
 import { prompt } from "inquirer"
@@ -34,7 +35,9 @@ async function solicitTarget() {
  * .
  * └── targetDir
  *     └── .contents.md
- *     └── notes
+ *     └── note-one.md
+ *     └── ....
+ *     └── note-one-hundred.md
  * A final step is to save the results to the note-mgr config file.
  */
 class NoteManagerConfigurer extends Config {
@@ -53,7 +56,7 @@ class NoteManagerConfigurer extends Config {
      * Creates a directory in the targetDir to store notes
      */
     private createNotesDir() {
-        const notesPath = path.resolve(HOME, `${this.targetPath}/notes`)
+        const notesPath = path.resolve(HOME, `${this.targetPath}`)
         fs.mkdirSync(notesPath, { recursive: true })
     }
 
@@ -64,6 +67,7 @@ class NoteManagerConfigurer extends Config {
         const indexFile = this.readConfig().get(
             ConfigurationKeys.NOTES_INDEX_FILE
         )
+
         const baseIndex = `| Title | Date | Publish | Private |\n| --- | --- | --- | --- |\n`
         fs.writeFile(
             `${this.targetPath}/${indexFile}.md`,

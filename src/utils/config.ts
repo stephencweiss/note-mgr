@@ -104,15 +104,6 @@ export class Config {
             this.readConfig().get(ConfigurationKeys.NOTES_ROOT_DIR)
         )
     }
-    /**
-     * The nomNotesPath getter returns a promise for the path to the `nom` directory of Notes relative to $HOME / USERPROFILE
-     */
-    get nomNotesPath() {
-        return path.resolve(
-            HOME,
-            `${this.readConfig().get(ConfigurationKeys.NOTES_ROOT_DIR)}/notes`
-        )
-    }
 
     /**
      * indexPath returns a promise for the path to the index file relative to $HOME / USERPROFILE
