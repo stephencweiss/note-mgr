@@ -1,8 +1,7 @@
-const os = require("os")
-const path = require("path")
-const fs = require("fs")
-
-const fsPromises = fs.promises
+import chalk from "chalk"
+import os from "os"
+import path from "path"
+import fs from "fs"
 
 export const HOME = os.homedir()
 
@@ -48,7 +47,20 @@ export class Config {
         this.writeConfig(baseConfig)
     }
 
+    configExists(): void {
+        try {
+            fs.accessSync(this.CONFIG_PATH)
+        } catch {
+            throw new Error(
+                chalk.bold.red(
+                    `Config doesn't exist at ${this.CONFIG_PATH}. Have you run init?`
+                )
+            )
+        }
+    }
+
     readConfig(): Map<ConfigurationKeys, string> {
+        this.configExists()
         const configContents = fs.readFileSync(this.CONFIG_PATH, {
             encoding: "utf8",
         })
@@ -89,15 +101,6 @@ export class Config {
         return path.resolve(
             HOME,
             this.readConfig().get(ConfigurationKeys.NOTES_ROOT_DIR)
-        )
-    }
-    /**
-     * The nomNotesPath getter returns a promise for the path to the `nom` directory of Notes relative to $HOME / USERPROFILE
-     */
-    get nomNotesPath() {
-        return path.resolve(
-            HOME,
-            `${this.readConfig().get(ConfigurationKeys.NOTES_ROOT_DIR)}/notes`
         )
     }
 

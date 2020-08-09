@@ -1,8 +1,9 @@
 import path from "path"
-const fs = require("fs")
+import fs from "fs"
 import { prompt } from "inquirer"
 import { Command } from "commander"
 import { Config, HOME, ConfigurationKeys } from "./utils"
+import { ContentHeaders } from "./utils"
 
 const fsPromises = fs.promises
 
@@ -34,7 +35,9 @@ async function solicitTarget() {
  * .
  * └── targetDir
  *     └── .contents.md
- *     └── notes
+ *     └── note-one.md
+ *     └── ....
+ *     └── note-one-hundred.md
  * A final step is to save the results to the note-mgr config file.
  */
 class NoteManagerConfigurer extends Config {
@@ -53,7 +56,7 @@ class NoteManagerConfigurer extends Config {
      * Creates a directory in the targetDir to store notes
      */
     private createNotesDir() {
-        const notesPath = path.resolve(HOME, `${this.targetPath}/notes`)
+        const notesPath = path.resolve(HOME, `${this.targetPath}`)
         fs.mkdirSync(notesPath, { recursive: true })
     }
 
@@ -64,9 +67,15 @@ class NoteManagerConfigurer extends Config {
         const indexFile = this.readConfig().get(
             ConfigurationKeys.NOTES_INDEX_FILE
         )
+
+        const headers: ContentHeaders[] = ["title", "date", "stage"]
+        const body = `| ${headers.join("|")} |\n | ${headers
+            .map((_) => `---`)
+            .join("|")}|\n`
+
         fs.writeFile(
             `${this.targetPath}/${indexFile}.md`,
-            "# Drafts\n\n# Notes\n",
+            body,
             (error: Error) => {
                 if (error)
                     throw new Error(
