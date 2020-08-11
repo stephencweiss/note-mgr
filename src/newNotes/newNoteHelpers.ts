@@ -46,7 +46,7 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
 export function parseOptions(
     args: any,
     config: Map<ConfigurationKeys, string>
-): Map<FrontmatterKeys, any> {
+): Map<FrontmatterKeys | "FileExtension", any> {
     const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const TODAY = dayjs().format("YYYY-MM-DD")
     const title = args.args[0] || args.title
@@ -54,6 +54,7 @@ export function parseOptions(
     const {
         category,
         date,
+        fileExtension,
         private: privateKey,
         publish,
         stage,
@@ -69,6 +70,7 @@ export function parseOptions(
         FrontmatterKeys.Date,
         (validateDt(date, defaultDateFormat) && date) || TODAY
     )
+    updateOptions(cliSetOptions, "FileExtension", fileExtension)
     updateOptions(cliSetOptions, FrontmatterKeys.Title, title)
     updateOptions(
         cliSetOptions,
@@ -99,6 +101,12 @@ export function updateOptions(
     optionsMap.set(key, value)
 }
 
+/**
+ * If a custom option is included, parse it and add to the options passed in from the CLI like a regular option to be
+ * included in the frontmatter.
+ * @param cliSetOptions
+ * @param customArgs
+ */
 function parseCustom(
     cliSetOptions: Map<FrontmatterKeys | any, any>,
     customArgs: string[]

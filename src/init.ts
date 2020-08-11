@@ -76,7 +76,7 @@ class NoteManagerConfigurer extends Config {
         fs.writeFile(
             `${this.targetPath}/${indexFile}.md`,
             body,
-            (error: Error) => {
+            (error: Error | null) => {
                 if (error)
                     throw new Error(
                         `Failed to create ${indexFile}.md at path ${this.targetPath}.\n${error.message}`
