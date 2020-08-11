@@ -14,8 +14,8 @@ export function generateFilePath(
 ): string {
     const configSettings = config.readConfig()
     return `${config.nomRootPath}/${
-        options.get(FrontmatterKeys.Slug) ||
-        kebabCase(options.get(FrontmatterKeys.Title))
+        options.get(FrontmatterKeys.slug) ||
+        kebabCase(options.get(FrontmatterKeys.title))
     }.${
         options.get("FileExtension") ||
         configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
@@ -24,12 +24,9 @@ export function generateFilePath(
 
 export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
     let frontmatter = ""
-
     for (let [key, val] of options) {
-        if (key === "PrivateKey") {
-            frontmatter += `Private: ${val}` // special handling due to Private being a restricted word in JS
-        } else if (key === "DateKey") {
-            frontmatter += `Date: ${val}` // special handling due to Date being a restricted word in JS
+        if (key === "private") {
+            frontmatter += `private: ${val}` // special handling due to Private being a restricted word in JS
         } else if (typeof val === "string") {
             frontmatter += `${key}: "${val}"`
         } else if (Array.isArray(val)) {
@@ -64,31 +61,27 @@ export function parseOptions(
 
     let cliSetOptions = new Map()
 
-    updateOptions(cliSetOptions, FrontmatterKeys.Category, category)
+    updateOptions(cliSetOptions, FrontmatterKeys.category, category)
     updateOptions(
         cliSetOptions,
-        FrontmatterKeys.Date,
+        FrontmatterKeys.date,
         (validateDt(date, defaultDateFormat) && date) || TODAY
     )
     updateOptions(cliSetOptions, "FileExtension", fileExtension)
-    updateOptions(cliSetOptions, FrontmatterKeys.Title, title)
+    updateOptions(cliSetOptions, FrontmatterKeys.title, title)
+    updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
     updateOptions(
         cliSetOptions,
-        FrontmatterKeys.PrivateKey,
-        privateKey || false
-    )
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.Publish,
+        FrontmatterKeys.publish,
         (validateDt(publish, defaultDateFormat) && publish) || TODAY
     )
-    updateOptions(cliSetOptions, FrontmatterKeys.Slug, slug)
+    updateOptions(cliSetOptions, FrontmatterKeys.slug, slug)
     updateOptions(
         cliSetOptions,
-        FrontmatterKeys.Stage,
+        FrontmatterKeys.stage,
         stage || DocumentStages.Draft
     )
-    updateOptions(cliSetOptions, FrontmatterKeys.Tags, tags)
+    updateOptions(cliSetOptions, FrontmatterKeys.tags, tags)
     parseCustom(cliSetOptions, custom)
     return cliSetOptions
 }

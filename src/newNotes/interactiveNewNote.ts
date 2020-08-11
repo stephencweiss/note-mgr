@@ -12,13 +12,13 @@ export async function solicitOptions(
     const questions = [
         {
             type: "input",
-            name: FrontmatterKeys.Title,
+            name: FrontmatterKeys.title,
             message: "What's the title for the note?",
             default: options.get("title") || title,
         },
         {
             type: "input",
-            name: FrontmatterKeys.Category,
+            name: FrontmatterKeys.category,
             message: "What's the category for the note? (Comma separated)",
             default: options.get("category"),
             filter: (args: any) =>
@@ -26,7 +26,7 @@ export async function solicitOptions(
         },
         {
             type: "input",
-            name: FrontmatterKeys.Tags,
+            name: FrontmatterKeys.tags,
             message: "Any tags for the note? (Comma separated)",
             default: options.get("tags"),
             filter: (args: any) =>
@@ -34,21 +34,21 @@ export async function solicitOptions(
         },
         {
             type: "input",
-            name: FrontmatterKeys.Date,
+            name: FrontmatterKeys.date,
             message: "What is the date for the note?",
             default: dayjs().format(defaultDateFmt),
             filter: (args: any) => dayjs(args).format(defaultDateFmt),
         },
         {
             type: "input",
-            name: FrontmatterKeys.Publish,
+            name: FrontmatterKeys.publish,
             message: "What is the publish date for the note?",
             default: dayjs().format(defaultDateFmt),
             filter: (args: any) => dayjs(args).format(defaultDateFmt),
         },
         {
             type: "list",
-            name: FrontmatterKeys.PrivateKey,
+            name: FrontmatterKeys.private,
             message: "Is the note private?",
             choices: [
                 { value: false, name: "No" },
@@ -57,7 +57,7 @@ export async function solicitOptions(
         },
         {
             type: "list",
-            name: FrontmatterKeys.Stage,
+            name: FrontmatterKeys.stage,
             message: "What's the stage of the document?",
             choices: [
                 { value: DocumentStages.Draft, name: DocumentStages.Draft },
@@ -84,12 +84,12 @@ export async function solicitOptions(
     ]
 
     await prompt(questions).then((answers) => {
-        updateOptions(options, FrontmatterKeys.Category, answers.Category)
-        updateOptions(options, FrontmatterKeys.Date, answers.DateKey)
+        updateOptions(options, FrontmatterKeys.category, answers.category)
+        updateOptions(options, FrontmatterKeys.date, answers.date)
         updateOptions(options, "FileExtension", answers.FileExtension)
-        updateOptions(options, FrontmatterKeys.PrivateKey, answers.PrivateKey)
-        updateOptions(options, FrontmatterKeys.Publish, answers.Publish)
-        updateOptions(options, FrontmatterKeys.Tags, answers.Tags)
-        updateOptions(options, FrontmatterKeys.Title, answers.Title)
+        updateOptions(options, FrontmatterKeys.private, answers.private)
+        updateOptions(options, FrontmatterKeys.publish, answers.publish)
+        updateOptions(options, FrontmatterKeys.tags, answers.tags)
+        updateOptions(options, FrontmatterKeys.title, answers.title)
     })
 }

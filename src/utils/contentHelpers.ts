@@ -25,25 +25,25 @@ type ContentRow = Pick<
 type RowMap = Map<keyof ContentRow, any>
 
 export enum FrontmatterKeys {
-    Category = "Category",
-    Date = "DateKey",
-    PrivateKey = "PrivateKey",
-    Publish = "Publish",
-    Slug = "Slug",
-    Stage = "Stage",
-    Tags = "Tags",
-    Title = "Title",
+    category = "category",
+    date = "date",
+    private = "private",
+    publish = "publish",
+    slug = "slug",
+    stage = "stage",
+    tags = "tags",
+    title = "title",
 }
 
 export interface Frontmatter {
-    title: string
-    slug: string
     category: string[]
-    tags: string[]
     date: string
-    stage: DocumentStages
-    publish: string
     private: boolean
+    publish: string
+    slug: string
+    stage: DocumentStages
+    tags: string[]
+    title: string
 }
 
 /**
@@ -168,13 +168,13 @@ export class Content extends Config {
         row.set(
             "title",
             `[${noteFrontmatter.get(
-                FrontmatterKeys.Title
-            )}](${noteFrontmatter.get(FrontmatterKeys.Slug)})`
+                FrontmatterKeys.title
+            )}](${noteFrontmatter.get(FrontmatterKeys.slug)})`
         )
-        row.set("private", noteFrontmatter.get(FrontmatterKeys.PrivateKey))
-        row.set("publish", noteFrontmatter.get(FrontmatterKeys.Publish))
-        row.set("date", noteFrontmatter.get(FrontmatterKeys.Date))
-        row.set("stage", noteFrontmatter.get(FrontmatterKeys.Stage))
+        row.set("private", noteFrontmatter.get(FrontmatterKeys.private))
+        row.set("publish", noteFrontmatter.get(FrontmatterKeys.publish))
+        row.set("date", noteFrontmatter.get(FrontmatterKeys.date))
+        row.set("stage", noteFrontmatter.get(FrontmatterKeys.stage))
         return row
     }
     // /**

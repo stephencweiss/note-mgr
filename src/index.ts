@@ -1,5 +1,7 @@
 import { Command } from "commander"
 import { init } from "./init"
+import { dates } from "./dates"
+import { counters } from "./countHelpers"
 import { newNote } from "./newNotes/newNote"
 import dotenv from "dotenv"
 
@@ -38,12 +40,29 @@ function main() {
             newNote(noteTitle, args)
         })
     program
-        .command("last-published")
-        .alias("l")
-        .description("Finds the date of the most recently published note")
-        .action(() => {
-            console.log(`Add last published here`)
-        })
+        .command("date")
+        .alias("d")
+        .option(
+            "-i --interactive",
+            "Interactively select the style of date published"
+        )
+        .option("-f --first", "Return the earliest published note")
+        .option("-l --latest", "(Default) Return the latest published note")
+        .option(
+            "-r --recent",
+            "Return the most recent published note in the past"
+        )
+        .description("Interrogate notes by their date fields")
+        .action(dates)
+    program
+        .command("count")
+        .alias("c")
+        .option("-d --date", "Return the count of notes listed by date")
+        .option(
+            "-p --published",
+            "(Default) Return the count of notes listed by publish date"
+        )
+        .action(counters)
     program
         .command("publish <note-title>")
         .alias("p")
@@ -55,7 +74,7 @@ function main() {
         .option("-t --title <title>", "The frontmatter for the title")
         .option("--custom [key:value...]", "Custom frontmatter")
         .option("--private", "The frontmatter for private", false)
-        .option("--tags <tag...>", "The frontmatter for the title")
+        .option("--tags <tag...>", "The frontmatter for the tags")
         .action((noteTitle, args) => {
             const { category, publish, title, tags } = args
             console.log(

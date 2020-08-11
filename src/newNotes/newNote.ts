@@ -37,8 +37,8 @@ export async function newNote(title: string | undefined, args: Command) {
 
     updateOptions(
         options,
-        FrontmatterKeys.Slug,
-        kebabCase(options.get(FrontmatterKeys.Title))
+        FrontmatterKeys.slug,
+        kebabCase(options.get(FrontmatterKeys.title))
     )
 
     createFile(config, options)
