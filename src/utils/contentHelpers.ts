@@ -143,12 +143,10 @@ export class Content extends Config {
         for (let [_, row] of rows) {
             rowData += "|"
             headers.forEach((header) => {
-                console.log({ row, header })
                 rowData += `${row.get(header)}|`
             })
             rowData += "\n"
         }
-        console.log({ rowData })
         return rowData
     }
 

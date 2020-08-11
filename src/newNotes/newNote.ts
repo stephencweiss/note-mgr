@@ -31,7 +31,6 @@ export async function newNote(title: string | undefined, args: Command) {
     const config = new Config()
     const configSettings = config.readConfig()
     const options = parseOptions(args, configSettings)
-    console.log({ options })
     if (args.interactive) {
         await solicitOptions(title, configSettings, options)
     }
@@ -42,11 +41,8 @@ export async function newNote(title: string | undefined, args: Command) {
         kebabCase(options.get(FrontmatterKeys.Title))
     )
 
-    console.log({ options })
     createFile(config, options)
     new Content().addNote(options)
-    console.log(`Note added!`)
-    // todo: add it to `.notes`
 }
 
 async function createFile(config: Config, options: Map<any, any>) {
