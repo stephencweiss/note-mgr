@@ -15,7 +15,8 @@ A CLI for managing drafts, ideas, and notes for publishing on the web.
 -   `-i --init` initialize `nom`
 -   `-n --new <note-title>` will create a new draft and add it to the `.contents` list
 -   **WIP** `-p --publish <note-title>` will publish the draft, prompt for frontmatter
--   **WIP** `-d --date-published` will interrogate the notes folder to find the latest `publish` date among the notes
+-   `-d --date` will interrogate the notes to understand dates of the notes (e.g., publish date)
+-   `-c --count` will count the notes based on flags provided
 
 ### Initialization Options
 

@@ -1,7 +1,7 @@
 import { Command } from "commander"
 import { init } from "./init"
 import { dates } from "./dates"
-import { counters } from "./countHelpers"
+import { counters } from "./counts"
 import { newNote } from "./newNotes/newNote"
 import dotenv from "dotenv"
 
@@ -36,9 +36,7 @@ function main() {
         .option("--private", "The frontmatter for private", false)
         .option("-t --tags <tag...>", "The frontmatter for the title")
         .description("Creates a new draft note")
-        .action((noteTitle, args) => {
-            newNote(noteTitle, args)
-        })
+        .action(newNote)
     program
         .command("date")
         .alias("d")
@@ -59,12 +57,13 @@ function main() {
         .alias("c")
         .option("-d --date", "Return the count of notes listed by date")
         .option(
-            "-p --published",
+            "-p --publish",
             "(Default) Return the count of notes listed by publish date"
         )
+        .option("-s --stage", "Return the count of notes based on stage")
         .action(counters)
     program
-        .command("publish <note-title>")
+        .command("publish [note-title]")
         .alias("p")
         .description("Publish a note")
         .option("-c --category <category>", "The frontmatter for category")
