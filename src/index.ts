@@ -61,6 +61,9 @@ function main() {
             "(Default) Return the count of notes listed by publish date"
         )
         .option("-s --stage", "Return the count of notes based on stage")
+        .option("-c --category", "Return the count of notes based on stage")
+        // .option("--filter", "filter out specific keys")
+        .option("-t --tags", "Return the count of notes based on stage")
         .action(counters)
     program
         .command("publish [note-title]")
