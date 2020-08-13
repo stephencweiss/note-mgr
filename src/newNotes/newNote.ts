@@ -37,15 +37,12 @@ export async function newNote(title: string | undefined, args: Command) {
 
     updateOptions(
         options,
-        FrontmatterKeys.Slug,
-        kebabCase(options.get(FrontmatterKeys.Title))
+        FrontmatterKeys.slug,
+        kebabCase(options.get(FrontmatterKeys.title))
     )
 
-    console.log({ options })
     createFile(config, options)
     new Content().addNote(options)
-    console.log(`Note added!`)
-    // todo: add it to `.notes`
 }
 
 async function createFile(config: Config, options: Map<any, any>) {

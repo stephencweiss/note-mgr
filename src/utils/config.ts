@@ -66,10 +66,10 @@ export class Config {
         })
         return configContents
             .split("\n")
-            .reduce((acc: Map<string, string>, cur: string) => {
+            .reduce((acc: Map<ConfigurationKeys, string>, cur: string) => {
                 const [key, val] = cur.split("=")
                 if (key && val) {
-                    acc.set(key, val)
+                    acc.set(key as ConfigurationKeys, val)
                 }
                 return acc
             }, new Map())
@@ -98,19 +98,23 @@ export class Config {
      * The nomRootPath getter returns a promise for the path to the directory housing all of `nom` relative to $HOME / USERPROFILE
      */
     get nomRootPath() {
-        return path.resolve(
-            HOME,
-            this.readConfig().get(ConfigurationKeys.NOTES_ROOT_DIR)
-        )
+        const rootDir = this.readConfig().get(ConfigurationKeys.NOTES_ROOT_DIR)
+        if (!rootDir) {
+            throw new Error("Missing root directory. Have you run init?")
+        }
+        return path.resolve(HOME, rootDir)
     }
 
     /**
      * indexPath returns a promise for the path to the index file relative to $HOME / USERPROFILE
      */
     indexPath() {
-        return path.resolve(
-            this.nomRootPath,
-            this.readConfig().get(ConfigurationKeys.NOTES_INDEX_FILE)
+        const indexFile = this.readConfig().get(
+            ConfigurationKeys.NOTES_INDEX_FILE
         )
+        if (!indexFile) {
+            throw new Error("Missing root directory. Have you run init?")
+        }
+        return path.resolve(this.nomRootPath, indexFile)
     }
 }

@@ -1,4 +1,4 @@
-import { Config } from "../src/utils"
+import { Config } from "../utils"
 
 function main() {
     const config = new Config()

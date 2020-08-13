@@ -15,7 +15,63 @@ A CLI for managing drafts, ideas, and notes for publishing on the web.
 -   `-i --init` initialize `nom`
 -   `-n --new <note-title>` will create a new draft and add it to the `.contents` list
 -   **WIP** `-p --publish <note-title>` will publish the draft, prompt for frontmatter
--   **WIP** `-l --last-published` will interrogate the notes folder to find the latest `publish` date among the notes
+-   `-d --date` will interrogate the notes to understand dates of the notes (e.g., publish date)
+-   `-c --count` will count the notes based on flags provided
+
+### Initialization Options
+
+-   "-t --target-dir <directoryPath>", "The relative path to the target directory for notes"
+    ```shell
+    % nom init -t path/to/target
+    ```
+
+If no target directory is passed, you will be prompted to provide one in an interactive session.
+
+### New Note Options
+
+-   "-c --category <category...>", "The frontmatter for category"
+    ```shell
+    $ nom new "the note's title" -c "note category"
+    ```
+-   "-d --date <date>", "The frontmatter for publish"
+    ```shell
+    $ nom new "the note's title" -d 2020-02-20
+    ```
+-   "-f --file-extension <file-extension>", "The file type for the note"
+    ```shell
+    $ nom new "the note's title" -f md
+    ```
+    **NB**: Only supports `md` and `mdx` currently
+-   "-i --interactive", "Interactively publish a note"
+    ```shell
+    $ nom new -i
+    # or
+    $ nom new "the note's title" -i
+    ```
+-   "-p --publish <date>", "The frontmatter for publish"
+    ```shell
+    $ nom new "the note's title" -p 2020-02-20
+    ```
+-   "--title <title>", "The frontmatter for the title"
+    ```shell
+    $ nom new --title "the note's title"
+    ```
+-   "--custom [key:value...]", "Custom frontmatter"
+    ```shell
+    $ nom new "the note's title" --custom "my custom key":"my custom value" --custom "secondKey":"secondValue"
+    ```
+-   "--private", "The frontmatter for private", false
+    ```shell
+    $ nom new "the note's title" --private
+    ```
+-   "-t --tags <tag...>", "The frontmatter for the tags"
+    ```shell
+    $ nom new "the note's title" -t "tag one" -t second -t "a third"
+    ```
+
+### Publish Options
+
+### Date Published Options
 
 ## Installation
 

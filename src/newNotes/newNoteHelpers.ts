@@ -14,8 +14,8 @@ export function generateFilePath(
 ): string {
     const configSettings = config.readConfig()
     return `${config.nomRootPath}/${
-        options.get(FrontmatterKeys.Slug) ||
-        kebabCase(options.get(FrontmatterKeys.Title))
+        options.get(FrontmatterKeys.slug) ||
+        kebabCase(options.get(FrontmatterKeys.title))
     }.${
         options.get("FileExtension") ||
         configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
@@ -24,12 +24,9 @@ export function generateFilePath(
 
 export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
     let frontmatter = ""
-
     for (let [key, val] of options) {
-        if (key === "PrivateKey") {
-            frontmatter += `Private: ${val}` // special handling due to Private being a restricted word in JS
-        } else if (key === "DateKey") {
-            frontmatter += `Date: ${val}` // special handling due to Date being a restricted word in JS
+        if (key === "private") {
+            frontmatter += `private: ${val}` // special handling due to Private being a restricted word in JS
         } else if (typeof val === "string") {
             frontmatter += `${key}: "${val}"`
         } else if (Array.isArray(val)) {
@@ -46,7 +43,7 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
 export function parseOptions(
     args: any,
     config: Map<ConfigurationKeys, string>
-): Map<FrontmatterKeys, any> {
+): Map<FrontmatterKeys | "FileExtension", any> {
     const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const TODAY = dayjs().format("YYYY-MM-DD")
     const title = args.args[0] || args.title
@@ -54,6 +51,7 @@ export function parseOptions(
     const {
         category,
         date,
+        fileExtension,
         private: privateKey,
         publish,
         stage,
@@ -63,30 +61,27 @@ export function parseOptions(
 
     let cliSetOptions = new Map()
 
-    updateOptions(cliSetOptions, FrontmatterKeys.Category, category)
+    updateOptions(cliSetOptions, FrontmatterKeys.category, category)
     updateOptions(
         cliSetOptions,
-        FrontmatterKeys.Date,
+        FrontmatterKeys.date,
         (validateDt(date, defaultDateFormat) && date) || TODAY
     )
-    updateOptions(cliSetOptions, FrontmatterKeys.Title, title)
+    updateOptions(cliSetOptions, "FileExtension", fileExtension)
+    updateOptions(cliSetOptions, FrontmatterKeys.title, title)
+    updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
     updateOptions(
         cliSetOptions,
-        FrontmatterKeys.PrivateKey,
-        privateKey || false
-    )
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.Publish,
+        FrontmatterKeys.publish,
         (validateDt(publish, defaultDateFormat) && publish) || TODAY
     )
-    updateOptions(cliSetOptions, FrontmatterKeys.Slug, slug)
+    updateOptions(cliSetOptions, FrontmatterKeys.slug, slug)
     updateOptions(
         cliSetOptions,
-        FrontmatterKeys.Stage,
+        FrontmatterKeys.stage,
         stage || DocumentStages.Draft
     )
-    updateOptions(cliSetOptions, FrontmatterKeys.Tags, tags)
+    updateOptions(cliSetOptions, FrontmatterKeys.tags, tags)
     parseCustom(cliSetOptions, custom)
     return cliSetOptions
 }
@@ -99,6 +94,12 @@ export function updateOptions(
     optionsMap.set(key, value)
 }
 
+/**
+ * If a custom option is included, parse it and add to the options passed in from the CLI like a regular option to be
+ * included in the frontmatter.
+ * @param cliSetOptions
+ * @param customArgs
+ */
 function parseCustom(
     cliSetOptions: Map<FrontmatterKeys | any, any>,
     customArgs: string[]
