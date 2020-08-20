@@ -1,11 +1,11 @@
 import { Command } from "commander"
+import dotenv from "dotenv"
+dotenv.config()
+
 import { init } from "./init"
 import { dates } from "./dates"
 import { counters } from "./counts"
-import { newNote } from "./newNotes/newNote"
-import dotenv from "dotenv"
-
-dotenv.config()
+import { newNote } from "./notes"
 
 function main() {
     const program = new Command()
@@ -31,6 +31,7 @@ function main() {
         )
         .option("-i --interactive", "Interactively publish a note")
         .option("-p --publish <date>", "The frontmatter for publish")
+        .option("-s --slug <slug>", "The frontmatter for the slug (kebab-case)")
         .option("--title <title>", "The frontmatter for the title")
         .option("--custom [key:value...]", "Custom frontmatter")
         .option("--private", "The frontmatter for private", false)
@@ -72,7 +73,11 @@ function main() {
         .option("-c --category <category>", "The frontmatter for category")
         .option("-d --date <date>", "The frontmatter for publish")
         .option("-i --interactive", "Interactively publish a note")
-        .option("-p --publish <date>", "The frontmatter for publish")
+        .option(
+            "-p --publish <date>",
+            "The frontmatter for publish, default today"
+        )
+        .option("-s --slug <slug>", "The frontmatter for the slug (kebab-case)")
         .option("-t --title <title>", "The frontmatter for the title")
         .option("--custom [key:value...]", "Custom frontmatter")
         .option("--private", "The frontmatter for private", false)

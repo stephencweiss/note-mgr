@@ -1,5 +1,6 @@
 import { prompt } from "inquirer"
 import dayjs from "dayjs"
+import kebabCase from "lodash.kebabcase"
 import { ConfigurationKeys, DocumentStages, FrontmatterKeys } from "../utils"
 import { updateOptions } from "."
 
@@ -15,6 +16,12 @@ export async function solicitOptions(
             name: FrontmatterKeys.title,
             message: "What's the title for the note?",
             default: options.get("title") || title,
+        },
+        {
+            type: "input",
+            name: FrontmatterKeys.slug,
+            message: "What's the slug for the note?",
+            default: options.get("slug") || kebabCase(title),
         },
         {
             type: "input",
@@ -84,12 +91,18 @@ export async function solicitOptions(
     ]
 
     await prompt(questions).then((answers) => {
-        updateOptions(options, FrontmatterKeys.category, answers.category)
-        updateOptions(options, FrontmatterKeys.date, answers.date)
-        updateOptions(options, "FileExtension", answers.FileExtension)
-        updateOptions(options, FrontmatterKeys.private, answers.private)
-        updateOptions(options, FrontmatterKeys.publish, answers.publish)
-        updateOptions(options, FrontmatterKeys.tags, answers.tags)
         updateOptions(options, FrontmatterKeys.title, answers.title)
+        updateOptions(
+            options,
+            FrontmatterKeys.slug,
+            answers.slug || kebabCase(answers.title)
+        )
+        updateOptions(options, FrontmatterKeys.stage, answers.stage)
+        updateOptions(options, FrontmatterKeys.publish, answers.publish)
+        updateOptions(options, FrontmatterKeys.date, answers.date)
+        updateOptions(options, FrontmatterKeys.private, answers.private)
+        updateOptions(options, FrontmatterKeys.category, answers.category)
+        updateOptions(options, FrontmatterKeys.tags, answers.tags)
+        updateOptions(options, "FileExtension", answers.FileExtension)
     })
 }

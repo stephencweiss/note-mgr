@@ -1,9 +1,9 @@
 import fs from "fs"
 import chalk from "chalk"
 import kebabCase from "lodash.kebabcase"
-import { Config, Content, FrontmatterKeys } from "../utils"
 import { Command } from "commander"
-require("dotenv").config()
+import { Config, Content, FrontmatterKeys } from "../utils"
+
 import {
     generateFilePath,
     generateFrontmatter,
@@ -35,12 +35,6 @@ export async function newNote(title: string | undefined, args: Command) {
         await solicitOptions(title, configSettings, options)
     }
 
-    updateOptions(
-        options,
-        FrontmatterKeys.slug,
-        kebabCase(options.get(FrontmatterKeys.title))
-    )
-
     createFile(config, options)
     new Content().addNote(options)
 }
@@ -48,7 +42,6 @@ export async function newNote(title: string | undefined, args: Command) {
 async function createFile(config: Config, options: Map<any, any>) {
     const filePath = generateFilePath(config, options)
 
-    // const noteIndex = config.get(ConfigurationKeys.NOTES_INDEX_FILE) // don't need this here, need it in the function that adds to the indexFile
     fsPromises
         .access(filePath)
         .then(() =>
