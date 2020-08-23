@@ -1,15 +1,13 @@
 import fs from "fs"
 import chalk from "chalk"
-import kebabCase from "lodash.kebabcase"
 import { Command } from "commander"
-import { Config, Content, FrontmatterKeys } from "../utils"
+import { Config, Content } from "../utils"
 
 import {
     generateFilePath,
     generateFrontmatter,
     parseOptions,
-    solicitOptions,
-    updateOptions,
+    solicitNoteMetadata,
 } from "."
 const fsPromises = fs.promises
 
@@ -32,7 +30,7 @@ export async function newNote(title: string | undefined, args: Command) {
     const configSettings = config.readConfig()
     const options = parseOptions(args, configSettings)
     if (args.interactive) {
-        await solicitOptions(title, configSettings, options)
+        await solicitNoteMetadata({ title, config: configSettings, options })
     }
 
     createFile(config, options)

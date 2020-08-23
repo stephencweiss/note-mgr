@@ -4,11 +4,17 @@ import kebabCase from "lodash.kebabcase"
 import { ConfigurationKeys, DocumentStages, FrontmatterKeys } from "../utils"
 import { updateOptions } from "."
 
-export async function solicitOptions(
-    title: string | undefined,
-    config: Map<ConfigurationKeys, any>,
+interface ISolicitNoteMetadata {
+    title?: string
+    config: Map<ConfigurationKeys, any>
     options: Map<any, any>
-) {
+}
+
+export async function solicitNoteMetadata({
+    title,
+    config,
+    options,
+}: ISolicitNoteMetadata) {
     const defaultDateFmt = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const questions = [
         {
