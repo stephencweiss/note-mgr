@@ -1,3 +1,4 @@
+import fs from "fs"
 import dayjs from "dayjs"
 import kebabCase from "lodash.kebabcase"
 import {
@@ -13,16 +14,15 @@ export function generateFilePath(
     options: Map<FrontmatterKeys | "FileExtension", any>
 ): string {
     const configSettings = config.readConfig()
-    return `${config.nomRootPath}/${
-        options.get(FrontmatterKeys.slug) ||
-        kebabCase(options.get(FrontmatterKeys.title))
-    }.${
+    return `${config.nomRootPath}/${options.get(FrontmatterKeys.slug)}.${
         options.get("FileExtension") ||
         configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
     }`
 }
 
-export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
+export function generateFrontmatter(
+    options: Map<FrontmatterKeys | "FileExtension", any>
+) {
     let frontmatter = ""
     for (let [key, val] of options) {
         if (key === "private") {
@@ -36,18 +36,24 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
         }
         frontmatter += `\n`
     }
-    return `---\n${frontmatter}---\n
+    return `---\n${frontmatter}---
     `
 }
 
+/**
+ * Creates a new options map for the note - the order in which options are updated matters since we're using a Map.
+ * @param args
+ * @param config
+ */
 export function parseOptions(
     args: any,
-    config: Map<ConfigurationKeys, string>
+    config: Map<ConfigurationKeys, string>,
+    opt?: any
 ): Map<FrontmatterKeys | "FileExtension", any> {
     const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const TODAY = dayjs().format("YYYY-MM-DD")
-    const title = args.args[0] || args.title
-    const slug = args.slug || kebabCase(title)
+    const title = args.title
+    const slug = kebabCase(args.slug) || kebabCase(title)
     const {
         category,
         date,
@@ -61,27 +67,27 @@ export function parseOptions(
 
     let cliSetOptions = new Map()
 
-    updateOptions(cliSetOptions, FrontmatterKeys.category, category)
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.date,
-        (validateDt(date, defaultDateFormat) && date) || TODAY
-    )
-    updateOptions(cliSetOptions, "FileExtension", fileExtension)
     updateOptions(cliSetOptions, FrontmatterKeys.title, title)
-    updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.publish,
-        (validateDt(publish, defaultDateFormat) && publish) || TODAY
-    )
-    updateOptions(cliSetOptions, FrontmatterKeys.slug, slug)
+    updateOptions(cliSetOptions, FrontmatterKeys.slug, slug || kebabCase(title))
     updateOptions(
         cliSetOptions,
         FrontmatterKeys.stage,
         stage || DocumentStages.Draft
     )
+    updateOptions(
+        cliSetOptions,
+        FrontmatterKeys.date,
+        (validateDt(date, defaultDateFormat) && date) || TODAY
+    )
+    updateOptions(
+        cliSetOptions,
+        FrontmatterKeys.publish,
+        (validateDt(publish, defaultDateFormat) && publish) || TODAY
+    )
+    updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
+    updateOptions(cliSetOptions, FrontmatterKeys.category, category)
     updateOptions(cliSetOptions, FrontmatterKeys.tags, tags)
+    updateOptions(cliSetOptions, "FileExtension", fileExtension)
     parseCustom(cliSetOptions, custom)
     return cliSetOptions
 }
@@ -107,5 +113,19 @@ function parseCustom(
     customArgs?.map((el) => {
         const [key, value] = el.split(":")
         cliSetOptions.set(key, value)
+    })
+}
+
+export function saveNoteToDisk({
+    filePath,
+    body,
+}: {
+    filePath: string
+    body: string
+}) {
+    fs.writeFile(filePath, body, { encoding: "utf8" }, (err: Error | null) => {
+        if (err) {
+            throw new Error(`Failed to save note at ${filePath}`)
+        }
     })
 }

@@ -1,13 +1,20 @@
 import { prompt } from "inquirer"
 import dayjs from "dayjs"
+import kebabCase from "lodash.kebabcase"
 import { ConfigurationKeys, DocumentStages, FrontmatterKeys } from "../utils"
 import { updateOptions } from "."
 
-export async function solicitOptions(
-    title: string | undefined,
-    config: Map<ConfigurationKeys, any>,
+interface ISolicitNoteMetadata {
+    title?: string
+    config: Map<ConfigurationKeys, any>
     options: Map<any, any>
-) {
+}
+
+export async function solicitNoteMetadata({
+    title,
+    config,
+    options,
+}: ISolicitNoteMetadata) {
     const defaultDateFmt = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const questions = [
         {
@@ -18,19 +25,30 @@ export async function solicitOptions(
         },
         {
             type: "input",
+            name: FrontmatterKeys.slug,
+            message:
+                "What's the slug for the note? (Will default to kebab-style of title)",
+            default: options.get("slug") || kebabCase(title),
+        },
+        {
+            type: "input",
             name: FrontmatterKeys.category,
             message: "What's the category for the note? (Comma separated)",
-            default: options.get("category"),
+            default: String(options.get("category")).split(", "),
             filter: (args: any) =>
-                args.split(",").map((tag: string) => tag.trim()),
+                String(args)
+                    .split(",")
+                    .map((tag: string) => tag.trim()),
         },
         {
             type: "input",
             name: FrontmatterKeys.tags,
             message: "Any tags for the note? (Comma separated)",
-            default: options.get("tags"),
+            default: String(options.get("tags")).split(", "),
             filter: (args: any) =>
-                args.split(",").map((tag: string) => tag.trim()),
+                String(args)
+                    .split(",")
+                    .map((tag: string) => tag.trim()),
         },
         {
             type: "input",
@@ -84,12 +102,18 @@ export async function solicitOptions(
     ]
 
     await prompt(questions).then((answers) => {
-        updateOptions(options, FrontmatterKeys.category, answers.category)
-        updateOptions(options, FrontmatterKeys.date, answers.date)
-        updateOptions(options, "FileExtension", answers.FileExtension)
-        updateOptions(options, FrontmatterKeys.private, answers.private)
-        updateOptions(options, FrontmatterKeys.publish, answers.publish)
-        updateOptions(options, FrontmatterKeys.tags, answers.tags)
         updateOptions(options, FrontmatterKeys.title, answers.title)
+        updateOptions(
+            options,
+            FrontmatterKeys.slug,
+            answers.slug || kebabCase(answers.title)
+        )
+        updateOptions(options, FrontmatterKeys.stage, answers.stage)
+        updateOptions(options, FrontmatterKeys.publish, answers.publish)
+        updateOptions(options, FrontmatterKeys.date, answers.date)
+        updateOptions(options, FrontmatterKeys.private, answers.private)
+        updateOptions(options, FrontmatterKeys.category, answers.category)
+        updateOptions(options, FrontmatterKeys.tags, answers.tags)
+        updateOptions(options, "FileExtension", answers.FileExtension)
     })
 }
