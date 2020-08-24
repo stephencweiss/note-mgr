@@ -26,24 +26,29 @@ export async function solicitNoteMetadata({
         {
             type: "input",
             name: FrontmatterKeys.slug,
-            message: "What's the slug for the note?",
+            message:
+                "What's the slug for the note? (Will default to kebab-style of title)",
             default: options.get("slug") || kebabCase(title),
         },
         {
             type: "input",
             name: FrontmatterKeys.category,
             message: "What's the category for the note? (Comma separated)",
-            default: options.get("category"),
+            default: String(options.get("category")).split(", "),
             filter: (args: any) =>
-                args.split(",").map((tag: string) => tag.trim()),
+                String(args)
+                    .split(",")
+                    .map((tag: string) => tag.trim()),
         },
         {
             type: "input",
             name: FrontmatterKeys.tags,
             message: "Any tags for the note? (Comma separated)",
-            default: options.get("tags"),
+            default: String(options.get("tags")).split(", "),
             filter: (args: any) =>
-                args.split(",").map((tag: string) => tag.trim()),
+                String(args)
+                    .split(",")
+                    .map((tag: string) => tag.trim()),
         },
         {
             type: "input",

@@ -1,3 +1,4 @@
+import fs from "fs"
 import dayjs from "dayjs"
 import kebabCase from "lodash.kebabcase"
 import {
@@ -19,7 +20,9 @@ export function generateFilePath(
     }`
 }
 
-export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
+export function generateFrontmatter(
+    options: Map<FrontmatterKeys | "FileExtension", any>
+) {
     let frontmatter = ""
     for (let [key, val] of options) {
         if (key === "private") {
@@ -33,7 +36,7 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
         }
         frontmatter += `\n`
     }
-    return `---\n${frontmatter}---\n
+    return `---\n${frontmatter}---
     `
 }
 
@@ -44,11 +47,12 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
  */
 export function parseOptions(
     args: any,
-    config: Map<ConfigurationKeys, string>
+    config: Map<ConfigurationKeys, string>,
+    opt?: any
 ): Map<FrontmatterKeys | "FileExtension", any> {
     const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const TODAY = dayjs().format("YYYY-MM-DD")
-    const title = args.args[0] || args.title
+    const title = args.title
     const slug = kebabCase(args.slug) || kebabCase(title)
     const {
         category,
@@ -109,5 +113,19 @@ function parseCustom(
     customArgs?.map((el) => {
         const [key, value] = el.split(":")
         cliSetOptions.set(key, value)
+    })
+}
+
+export function saveNoteToDisk({
+    filePath,
+    body,
+}: {
+    filePath: string
+    body: string
+}) {
+    fs.writeFile(filePath, body, { encoding: "utf8" }, (err: Error | null) => {
+        if (err) {
+            throw new Error(`Failed to save note at ${filePath}`)
+        }
     })
 }

@@ -8,21 +8,20 @@ import {
     generateFrontmatter,
     parseOptions,
     solicitNoteMetadata,
+    saveNoteToDisk,
 } from "."
 const fsPromises = fs.promises
 
 /**
- * Making a few assumptions at this time:
- * 1. If a note is created interactively, options passed via flags are generally ignored
- * 2. The slug is _always_ auto-generated based on the title
+ * NB: If a note is created interactively, options passed via flags are generally ignored, or used as a default
  * @param title
  * @param args
  */
-export async function newNote(title: string | undefined, args: Command) {
-    if (!title && !args.title && !args.interactive)
+export async function newNote(args: Command) {
+    if (!args.title && !args.interactive)
         return console.log(
             chalk.bold.red(
-                "A new notes needs a title unless generated interactively (`-i`)."
+                "A new note needs a title (-t, --title). Alternatively, create the note in interactive mode(-i, --interactive)."
             )
         )
 
@@ -30,7 +29,7 @@ export async function newNote(title: string | undefined, args: Command) {
     const configSettings = config.readConfig()
     const options = parseOptions(args, configSettings)
     if (args.interactive) {
-        await solicitNoteMetadata({ title, config: configSettings, options })
+        await solicitNoteMetadata({ config: configSettings, options })
     }
 
     createFile(config, options)
@@ -50,15 +49,6 @@ async function createFile(config: Config, options: Map<any, any>) {
             )
         )
         .catch(() => {
-            fs.writeFile(
-                filePath,
-                generateFrontmatter(options),
-                (error: Error | null) => {
-                    if (error)
-                        throw new Error(
-                            `Failed to create ${filePath} at path.\n${error.message}`
-                        )
-                }
-            )
+            saveNoteToDisk({ filePath, body: generateFrontmatter(options) })
         })
 }
