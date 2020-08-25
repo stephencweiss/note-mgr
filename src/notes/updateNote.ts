@@ -47,7 +47,7 @@ export async function updateNote(args: Command) {
 
     frontmatter = parseOptions({ ...currentFrontmatter, ...args }, config, {
         current: currentFrontmatter,
-    })
+    }) as Map<FrontmatterKeys, any>
 
     if (args.interactive) {
         await solicitNoteMetadata({ config, options: frontmatter })
@@ -57,11 +57,9 @@ export async function updateNote(args: Command) {
         filePath: notePath,
         body: `${generateFrontmatter(frontmatter)}${body}`,
     })
-    // update .contents
-    // - read the contents, find the _old_ title/slug combo
-    // - update remove the line
-    // - add a new line with the current frontmatter
-    // - sort
+
+    const content = new Content()
+    content.updateNote({ frontmatter })
 }
 
 async function testPath(notePath: string) {

@@ -46,6 +46,16 @@ export interface Frontmatter {
     title: string
 }
 
+interface IFindNote {
+    key: string
+    body: Map<string, RowMap>
+}
+
+interface IUpdateNote {
+    frontmatter: Map<FrontmatterKeys, any>
+    dupeCheck?: boolean
+}
+
 /**
  * The purpose of this file is to create a set of helpers for accessing the index file
  * for example, this will include things like
@@ -96,29 +106,23 @@ export class Content extends Config {
         return { headers, divider, body }
     }
 
-    // /**
-    //  * Add a note to the indexFile
-    //  * @param param0
-    //  */
-    async addNote(noteFrontmatter: any) {
-        // read the list
-        const { body, headers, divider } = this.read()
+    async addNote(frontmatter: Map<FrontmatterKeys, any>) {
+        this.updateNote({ frontmatter, dupeCheck: true })
+    }
 
-        // convert the frontmatter to the row
-        const newItem = this.convertFrontmatterToRow(noteFrontmatter)
-        // check that the frontmatter doesn't exist already - should already have crashed if this is the case, so this is a redundant check
+    async updateNote({ frontmatter, dupeCheck }: IUpdateNote) {
+        const { headers, divider, body } = this.read()
+        const row = this.convertFrontmatterToRow(frontmatter)
 
-        if (body.has(newItem.get("title"))) {
+        if (dupeCheck && body.has(row.get("title"))) {
             throw new Error(
                 chalk.bold.red(
                     `Trying to add a note that already exists, perhaps try updating it instead?`
                 )
             )
         }
-        body.set(newItem.get("title"), newItem)
 
-        // add the row to the list
-        // write the list
+        body.set(row.get("title"), row)
         this.updateContent(this.prepareContent(headers, divider, body))
     }
 
@@ -177,10 +181,22 @@ export class Content extends Config {
         row.set("stage", noteFrontmatter.get(FrontmatterKeys.stage))
         return row
     }
-    // /**
-    //  * Update a note
-    //  */
-    // async updateNote({}: {}) {}
+
+    private removeRow({ key, body }: IFindNote) {
+        if (!this.findRow({ key, body })) {
+            console.log(`No note exists with the key ${key}`)
+            throw new Error(`No note exists with the key ${key}`)
+        }
+        body.delete(key)
+        return body
+    }
+
+    private findRow({ key, body }: IFindNote) {
+        if (!body.has(key)) {
+            return false
+        }
+        return true
+    }
 
     private updateContent(body: string) {
         fs.writeFileSync(this.contentPath, body, { encoding: "utf8" })

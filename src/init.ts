@@ -68,7 +68,13 @@ class NoteManagerConfigurer extends Config {
             ConfigurationKeys.NOTES_INDEX_FILE
         )
 
-        const headers: ContentHeaders[] = ["title", "date", "stage"]
+        const headers: ContentHeaders[] = [
+            "title",
+            "date",
+            "publish",
+            "stage",
+            "private",
+        ]
         const body = `| ${headers.join("|")} |\n | ${headers
             .map((_) => `---`)
             .join("|")}|\n`

@@ -72,8 +72,9 @@ function main() {
     program
         .command("update")
         .alias("u")
-        .description("Update a note")
+        .description("Update a note's frontmatter")
         .option("-c --category <category>", "The frontmatter for category")
+        .option("-i --interactive", "Interactively publish a note")
         .option("-d --date <date>", "The frontmatter for publish")
         .option(
             "-p --publish <date>",
