@@ -1,7 +1,7 @@
 import fs from "fs"
 import chalk from "chalk"
 import { Command } from "commander"
-import { Config, Content } from "../utils"
+import { Config, Content, FrontmatterKeys } from "../utils"
 
 import {
     generateFilePath,
@@ -33,7 +33,7 @@ export async function newNote(args: Command) {
     }
 
     createFile(config, options)
-    new Content().addNote(options)
+    new Content().addNote(options as Map<FrontmatterKeys, string>)
 }
 
 async function createFile(config: Config, options: Map<any, any>) {
