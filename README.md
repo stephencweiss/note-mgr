@@ -14,7 +14,8 @@ A CLI for managing drafts, ideas, and notes for publishing on the web.
 
 -   `-i --init` initialize `nom`
 -   `-n --new <note-title>` will create a new draft and add it to the `.contents` list
--   **WIP** `-p --publish <note-title>` will publish the draft, prompt for frontmatter
+-   `-p --publish <note-title>` will publish the draft, prompt for frontmatter
+-   `-r --remove` will prompt for a note to remove
 -   `-d --date` will interrogate the notes to understand dates of the notes (e.g., publish date)
 -   `-c --count` will count the notes based on flags provided
 
@@ -41,7 +42,7 @@ If no target directory is passed, you will be prompted to provide one in an inte
     ```shell
     $ nom new "the note's title" -f md
     ```
-    **NB**: Only supports `md` and `mdx` currently
+    **NB**: Only supports `md` currently
 -   "-i --interactive", "Interactively publish a note"
     ```shell
     $ nom new -i
@@ -71,7 +72,11 @@ If no target directory is passed, you will be prompted to provide one in an inte
 
 ### Publish Options
 
-### Date Published Options
+### Remove Options
+
+### Date Options
+
+### Count Options
 
 ## Installation
 

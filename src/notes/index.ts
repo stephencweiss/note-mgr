@@ -1,4 +1,5 @@
 export * from "./interactiveNotePrompt"
+export * from "./removeNote"
 export * from "./newNote"
 export * from "./noteHelpers"
 export * from "./updateNote"
