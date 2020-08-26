@@ -81,7 +81,7 @@ export class Content extends Config {
     /**
      * Read the indexFile (default `.contents`)
      */
-    read() {
+    readContent() {
         const contents = fs.readFileSync(this.contentPath, {
             encoding: "utf8",
         })
@@ -111,7 +111,7 @@ export class Content extends Config {
     }
 
     async updateNote({ frontmatter, dupeCheck }: IUpdateNote) {
-        const { headers, divider, body } = this.read()
+        const { headers, divider, body } = this.readContent()
         const row = this.convertFrontmatterToRow(frontmatter)
 
         if (dupeCheck && body.has(row.get("title"))) {
@@ -165,15 +165,23 @@ export class Content extends Config {
             .map((el) => el.trim())
     }
 
+    private getRowTitle(
+        title: FrontmatterKeys.title,
+        slug: FrontmatterKeys.slug
+    ) {
+        return `[${title}](${slug})`
+    }
+
     private convertFrontmatterToRow(
         noteFrontmatter: Map<FrontmatterKeys, any>
     ) {
         const row = new Map() as RowMap
         row.set(
             "title",
-            `[${noteFrontmatter.get(
-                FrontmatterKeys.title
-            )}](${noteFrontmatter.get(FrontmatterKeys.slug)})`
+            this.getRowTitle(
+                noteFrontmatter.get(FrontmatterKeys.title),
+                noteFrontmatter.get(FrontmatterKeys.slug)
+            )
         )
         row.set("private", noteFrontmatter.get(FrontmatterKeys.private))
         row.set("publish", noteFrontmatter.get(FrontmatterKeys.publish))
@@ -182,13 +190,15 @@ export class Content extends Config {
         return row
     }
 
-    private removeRow({ key, body }: IFindNote) {
+    removeRow(title: FrontmatterKeys.title, slug: FrontmatterKeys.slug) {
+        const key = this.getRowTitle(title, slug)
+        const { headers, divider, body } = this.readContent()
         if (!this.findRow({ key, body })) {
             console.log(`No note exists with the key ${key}`)
             throw new Error(`No note exists with the key ${key}`)
         }
         body.delete(key)
-        return body
+        this.updateContent(this.prepareContent(headers, divider, body))
     }
 
     private findRow({ key, body }: IFindNote) {

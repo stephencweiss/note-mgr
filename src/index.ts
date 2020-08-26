@@ -5,7 +5,7 @@ dotenv.config()
 import { init } from "./init"
 import { dates } from "./dates"
 import { counters } from "./counts"
-import { newNote, updateNote } from "./notes"
+import { removeNote, newNote, updateNote } from "./notes"
 
 function main() {
     const program = new Command()
@@ -91,6 +91,11 @@ function main() {
         .option("--tags <tag...>", "The frontmatter for the tags")
         .action(updateNote)
 
+    program
+        .command("remove")
+        .alias("r")
+        .description("Remove a note")
+        .action(removeNote)
     program.parse(process.argv)
 }
 
