@@ -153,8 +153,7 @@ export async function findNote(config: Map<ConfigurationKeys, string>) {
             excludePath: (nodePath: string) =>
                 nodePath.startsWith("node_modules"),
             excludeFilter: (nodePath: string) =>
-                nodePath.startsWith(".") &&
-                nodePath.match(/.contents.md/gm) === null,
+                nodePath.match(/.contents.md/gm) !== null,
             itemType: "file",
             rootPath: rootDir,
             message: "Select the note you'd like to update:",
