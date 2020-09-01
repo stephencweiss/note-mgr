@@ -5,6 +5,8 @@ import fs from "fs"
 
 export const HOME = os.homedir()
 
+export type NoteAction = "remove" | "update"
+
 export enum ConfigurationKeys {
     NOTES_ROOT_DIR = "NOTES_ROOT_DIR",
     DEFAULT_FILE_EXTENSION = "DEFAULT_FILE_TYPE",

@@ -5,7 +5,7 @@ export async function removeNote() {
     try {
         const config = new Config().readConfig()
         const content = new Content()
-        const notePath = await findNote(config)
+        const notePath = await findNote(config, "remove")
         const note = readNote(notePath)
         const frontmatter = note.data
         await removeNoteFile(notePath)
