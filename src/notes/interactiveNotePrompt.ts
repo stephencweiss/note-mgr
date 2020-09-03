@@ -93,12 +93,6 @@ export async function solicitNoteMetadata({
                 },
             ],
         },
-        {
-            type: "input",
-            name: "FileExtension",
-            message: "What's the file extension?",
-            default: config.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION),
-        },
     ]
 
     await prompt(questions).then((answers) => {
@@ -114,6 +108,5 @@ export async function solicitNoteMetadata({
         updateOptions(options, FrontmatterKeys.private, answers.private)
         updateOptions(options, FrontmatterKeys.category, answers.category)
         updateOptions(options, FrontmatterKeys.tags, answers.tags)
-        updateOptions(options, "FileExtension", answers.FileExtension)
     })
 }

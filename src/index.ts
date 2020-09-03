@@ -25,10 +25,6 @@ function main() {
         .alias("n")
         .option("-c --category <category...>", "The frontmatter for category")
         .option("-d --date <date>", "The frontmatter for publish")
-        .option(
-            "-f --file-extension <file-extension>",
-            "The file type for the note"
-        )
         .option("-i --interactive", "Interactively publish a note")
         .option("-p --publish <date>", "The frontmatter for publish")
         .option("-s --slug <slug>", "The frontmatter for the slug (kebab-case)")
@@ -41,6 +37,27 @@ function main() {
         .option("--tags <tag...>", "The frontmatter for the title")
         .description("Creates a new draft note")
         .action(newNote)
+    program
+        .command("update")
+        .alias("u")
+        .description("Update a note's frontmatter")
+        .option("-c --category <category>", "The frontmatter for category")
+        .option("-i --interactive", "Interactively publish a note")
+        .option("-d --date <date>", "The frontmatter for publish")
+        .option(
+            "-p --publish <date>",
+            "The frontmatter for publish, default today"
+        )
+        .option("-s --slug <slug>", "The frontmatter for the slug (kebab-case)")
+        .option("--stage <stage>", "The frontmatter for the stage")
+        .option("-t --title <title>", "The frontmatter for the title")
+        .option(
+            "--custom [key:value...]",
+            "Custom frontmatter - only key:value pairs are supported at this time"
+        )
+        .option("--private", "The frontmatter for private", false)
+        .option("--tags <tag...>", "The frontmatter for the tags")
+        .action(updateNote)
     program
         .command("date")
         .alias("d")
@@ -66,30 +83,9 @@ function main() {
         )
         .option("-s --stage", "Return the count of notes based on stage")
         .option("-c --category", "Return the count of notes based on stage")
-        // .option("--filter", "filter out specific keys")
+        // .option("--filter", "filter out specific keys") // TODO
         .option("-t --tags", "Return the count of notes based on stage")
         .action(counters)
-    program
-        .command("update")
-        .alias("u")
-        .description("Update a note's frontmatter")
-        .option("-c --category <category>", "The frontmatter for category")
-        .option("-i --interactive", "Interactively publish a note")
-        .option("-d --date <date>", "The frontmatter for publish")
-        .option(
-            "-p --publish <date>",
-            "The frontmatter for publish, default today"
-        )
-        .option("-s --slug <slug>", "The frontmatter for the slug (kebab-case)")
-        .option("--stage <stage>", "The frontmatter for the stage")
-        .option("-t --title <title>", "The frontmatter for the title")
-        .option(
-            "--custom [key:value...]",
-            "Custom frontmatter - only key:value pairs are supported at this time"
-        )
-        .option("--private", "The frontmatter for private", false)
-        .option("--tags <tag...>", "The frontmatter for the tags")
-        .action(updateNote)
 
     program
         .command("remove")

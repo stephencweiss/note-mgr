@@ -15,18 +15,15 @@ const fsPromises = fs.promises
 
 export function generateFilePath(
     config: Config,
-    options: Map<FrontmatterKeys | "FileExtension", any>
+    options: Map<FrontmatterKeys, any>
 ): string {
     const configSettings = config.readConfig()
-    return `${config.nomRootPath}/${options.get(FrontmatterKeys.slug)}.${
-        options.get("FileExtension") ||
-        configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)
-    }`
+    return `${config.nomRootPath}/${options.get(
+        FrontmatterKeys.slug
+    )}.${configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)}`
 }
 
-export function generateFrontmatter(
-    options: Map<FrontmatterKeys | "FileExtension", any>
-) {
+export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
     let frontmatter = ""
     for (let [key, val] of options) {
         if (key === "private") {
@@ -56,7 +53,7 @@ export function readNote(path: string) {
 export function parseOptions(
     args: any,
     config: Map<ConfigurationKeys, string>
-): Map<FrontmatterKeys | "FileExtension", any> {
+): Map<FrontmatterKeys, any> {
     const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
     const TODAY = dayjs().format("YYYY-MM-DD")
     const title = args.title
@@ -64,7 +61,6 @@ export function parseOptions(
     const {
         category,
         date,
-        fileExtension,
         private: privateKey,
         publish,
         stage,
@@ -94,14 +90,13 @@ export function parseOptions(
     updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
     updateOptions(cliSetOptions, FrontmatterKeys.category, category)
     updateOptions(cliSetOptions, FrontmatterKeys.tags, tags)
-    updateOptions(cliSetOptions, "FileExtension", fileExtension)
     parseCustom(cliSetOptions, custom)
     return cliSetOptions
 }
 
 export function updateOptions(
     optionsMap: Map<FrontmatterKeys | any, any>,
-    key: FrontmatterKeys | "FileExtension",
+    key: FrontmatterKeys,
     value?: any
 ) {
     optionsMap.set(key, value)
