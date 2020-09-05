@@ -34,7 +34,7 @@ function main() {
             "Custom frontmatter - only key:value pairs are supported at this time"
         )
         .option("--private", "The frontmatter for private", false)
-        .option("--tags <tag...>", "The frontmatter for the title")
+        .option("--tag <tag...>", "The frontmatter for the title")
         .description("Creates a new draft note")
         .action(newNote)
     program
@@ -55,16 +55,17 @@ function main() {
             "--custom [key:value...]",
             "Custom frontmatter - only key:value pairs are supported at this time"
         )
-        .option("--private", "The frontmatter for private", false)
-        .option("--tags <tag...>", "The frontmatter for the tags")
+        .option("--private", "Make the note private", false)
+        .option("--tag <tag...>", "The frontmatter for the tags")
         .action(updateNote)
+    program
+        .command("remove")
+        .alias("r")
+        .description("Remove a note")
+        .action(removeNote)
     program
         .command("date")
         .alias("d")
-        .option(
-            "-i --interactive",
-            "Interactively select the style of date published"
-        )
         .option("-f --first", "Return the earliest published note")
         .option("-l --latest", "(Default) Return the latest published note")
         .option(
@@ -83,15 +84,11 @@ function main() {
         )
         .option("-s --stage", "Return the count of notes based on stage")
         .option("-c --category", "Return the count of notes based on stage")
-        // .option("--filter", "filter out specific keys") // TODO
+        .option("-p --private", "Only consider notes that are private") //TODO: Need to implement per https://github.com/stephencweiss/note-mgr/issues/23
+        .option("-np --no-private", "Only consider notes that are not private") //TODO: Need to implement per https://github.com/stephencweiss/note-mgr/issues/23
         .option("-t --tags", "Return the count of notes based on stage")
         .action(counters)
 
-    program
-        .command("remove")
-        .alias("r")
-        .description("Remove a note")
-        .action(removeNote)
     program.parse(process.argv)
 }
 

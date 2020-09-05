@@ -29,12 +29,11 @@ export class NoteDates extends Notes {
         const sorted = published.sort(sortFn)
 
         console.log(
-            chalk.blue.bold(
-                `The published date according to the ${this.style} filter is:\n`
+            chalk.bold(
+                `The published date according to the ${this.style} filter is:`
             )
         )
-        console.log(sorted[sorted.length - 1].publish)
-        console.log(chalk.bold.blue(`^^^^^^^^^^^\n`))
+        console.log(chalk.bold(sorted[sorted.length - 1].publish))
     }
 
     private pickSort(style: Published) {

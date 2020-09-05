@@ -43,12 +43,11 @@ class CountNotes extends Notes {
         return this.notes
     }
     print(style: Style) {
-        console.log(chalk.bold.blue(`The count of notes by ${style}:\n`))
+        console.log(chalk.bold(`The count of notes by ${style}:`))
         for (let [date, count] of this.counted) {
-            console.log(`${date}: ${count}`)
+            console.log(chalk.bold(`${date}: ${count}`))
         }
-        console.log(chalk.bold.blue(`\nTotal note count: ${this.total}`))
-        console.log(chalk.bold.blue(`^^^^^^^^^^^\n`))
+        console.log(chalk.bold(`Total note count: ${this.total}`))
     }
 
     async byStyle(style: Style) {
