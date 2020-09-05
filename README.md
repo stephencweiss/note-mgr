@@ -26,7 +26,7 @@ $ nom --help
 
 Before using `nom`, it must be initialized with `nom init`
 
-![nom init gif](./gifs/nom-init.gif)
+![nom init gif](https://res.cloudinary.com/scweiss1/image/upload/v1599344327/code-comments/nom-init-min_bgytqy.gif)
 
 ## Usage
 
@@ -48,11 +48,11 @@ If no target directory is passed, you will be prompted to provide one in an inte
 
 ### New Note Options
 
-![nom new](./gifs/nom-new.gif)
+![nom new](https://res.cloudinary.com/scweiss1/image/upload/v1599344326/code-comments/nom-new-min_ouv32q.gif)
 
 To create a new note, at a minimum `nom` requires _either_ a title (`-t --title`) _or_ to create the note interactively (`-i --interactive`).
 
-![nom new interactive](./gifs/nom-new-interactive.gif)
+![nom new interactive](https://res.cloudinary.com/scweiss1/image/upload/v1599344326/code-comments/nom-new-interactive-min_nxqo6g.gif)
 All options are available for setting declaratively with the following options:
 
 -   "-c --category <category...>", "The frontmatter for category"
@@ -105,7 +105,7 @@ All options are available for setting declaratively with the following options:
 
 ### Update Options
 
-![nom update --interactive](./gifs/nom-update.gif)
+![nom update --interactive](https://res.cloudinary.com/scweiss1/image/upload/v1599344327/code-comments/nom-update-min_e4ymdu.gif)
 
 The `nom update` command _begins_ by finding a note interactively using a fuzzy search of all files within the notes directory. The search is based on the _file name_, which is tied to the [slug of the note](https://github.com/stephencweiss/note-mgr/issues/38).
 
