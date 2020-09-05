@@ -2,7 +2,7 @@
 .gitignore
 .prettierignore
 yarn.lock
-build
+dist
 
 # Logs
 logs

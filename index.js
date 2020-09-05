@@ -1,4 +1,4 @@
 #!/usr/bin/env node --no-warnings
 
-const main = require("./build/index").default
+const main = require("./dist/index").default
 main()

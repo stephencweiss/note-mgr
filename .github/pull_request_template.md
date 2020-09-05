@@ -17,7 +17,7 @@
 -   [ ] 🐎 performance
 -   [ ] 🧪 tests
 -   [ ] 🏗️ refactor
--   [ ] 🧰 tooling / infrastructure |
+-   [ ] 🧰 tooling / infrastructure
 
 ## Which issue does this address?
 
