@@ -1,5 +1,6 @@
 import path from "path"
 import fs from "fs"
+import chalk from "chalk"
 import { prompt } from "inquirer"
 import { Command } from "commander"
 import { Config, HOME, ConfigurationKeys } from "./utils"
@@ -75,7 +76,7 @@ class NoteManagerConfigurer extends Config {
             "stage",
             "private",
         ]
-        const body = `| ${headers.join("|")} |\n | ${headers
+        const body = `|${headers.join("|")}|\n|${headers
             .map((_) => `---`)
             .join("|")}|\n`
 
@@ -87,6 +88,11 @@ class NoteManagerConfigurer extends Config {
                     throw new Error(
                         `Failed to create ${indexFile}.md at path ${this.targetPath}.\n${error.message}`
                     )
+                console.log(
+                    chalk.bold(
+                        `The nom index file is created at:\n${this.targetPath}`
+                    )
+                )
             }
         )
     }

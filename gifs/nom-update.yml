@@ -1,0 +1,336 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+    # Specify a command to be executed
+    # like `/bin/bash -l`, `ls`, or any other commands
+    # the default is bash for Linux
+    # or powershell.exe for Windows
+    command: bash -l
+
+    # Specify the current working directory path
+    # the default is the current working directory path
+    cwd: /Users/stephen/code/note-mgr-cli
+
+    # Export additional ENV variables
+    env:
+        recording: true
+
+    # Explicitly set the number of columns
+    # or use `auto` to take the current
+    # number of columns of your shell
+    cols: 80
+
+    # Explicitly set the number of rows
+    # or use `auto` to take the current
+    # number of rows of your shell
+    rows: 25
+
+    # Amount of times to repeat GIF
+    # If value is -1, play once
+    # If value is 0, loop indefinitely
+    # If value is a positive number, loop n times
+    repeat: 0
+
+    # Quality
+    # 1 - 100
+    quality: 100
+
+    # Delay between frames in ms
+    # If the value is `auto` use the actual recording delays
+    frameDelay: auto
+
+    # Maximum delay between frames in ms
+    # Ignored if the `frameDelay` isn't set to `auto`
+    # Set to `auto` to prevent limiting the max idle time
+    maxIdleTime: 2000
+
+    # The surrounding frame box
+    # The `type` can be null, window, floating, or solid`
+    # To hide the title use the value null
+    # Don't forget to add a backgroundColor style with a null as type
+    frameBox:
+        type: floating
+        title: nom update --interactive
+        style:
+            border: 0px black solid
+            # boxShadow: none
+            # margin: 0px
+
+    # Add a watermark image to the rendered gif
+    # You need to specify an absolute path for
+    # the image on your machine or a URL, and you can also
+    # add your own CSS styles
+    watermark:
+        imagePath: null
+        style:
+            position: absolute
+            right: 15px
+            bottom: 15px
+            width: 100px
+            opacity: 0.9
+
+    # Cursor style can be one of
+    # `block`, `underline`, or `bar`
+    cursorStyle: block
+
+    # Font family
+    # You can use any font that is installed on your machine
+    # in CSS-like syntax
+    fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+
+    # The size of the font
+    fontSize: 12
+
+    # The height of lines
+    lineHeight: 1
+
+    # The spacing between letters
+    letterSpacing: 0
+
+    # Theme
+    theme:
+        background: "transparent"
+        foreground: "#afafaf"
+        cursor: "#c7c7c7"
+        black: "#232628"
+        red: "#fc4384"
+        green: "#b3e33b"
+        yellow: "#ffa727"
+        blue: "#75dff2"
+        magenta: "#ae89fe"
+        cyan: "#708387"
+        white: "#d5d5d0"
+        brightBlack: "#626566"
+        brightRed: "#ff7fac"
+        brightGreen: "#c8ed71"
+        brightYellow: "#ebdf86"
+        brightBlue: "#75dff2"
+        brightMagenta: "#ae89fe"
+        brightCyan: "#b1c6ca"
+        brightWhite: "#f9f9f4"
+
+# Records, feel free to edit them
+records:
+    - delay: 500
+      content: "% "
+    - delay: 100
+      content: "n"
+    - delay: 100
+      content: o
+    - delay: 100
+      content: m
+    - delay: 100
+      content: " "
+    - delay: 100
+      content: u
+    - delay: 100
+      content: p
+    - delay: 100
+      content: d
+    - delay: 100
+      content: a
+    - delay: 100
+      content: t
+    - delay: 100
+      content: e
+    - delay: 100
+      content: " "
+    - delay: 100
+      content: "-"
+    - delay: 100
+      content: i
+    - delay: 1000
+      content: "\r\n"
+    - delay: 100
+      content: "\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0m\e[2m(Use arrow keys or type to search)\e[22m\r\n\e[36m❯ /Users/stephen/notes-home/dir/path/to/notes/.contents.md\e[39m \r\n  /Users/stephen/notes-home/dir/path/to/notes/a-brand-new-note.md \r\n  /Users/stephen/notes-home/dir/path/to/notes/my-new-note.md \e[3A\e[61D\e[74C"
+    - delay: 1000
+      content: "\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0m\r\n  /Users/stephen/notes-home/dir/path/to/notes/.contents.md \r\n\e[36m❯ /Users/stephen/notes-home/dir/path/to/notes/a-brand-new-note.md\e[39m \r\n  /Users/stephen/notes-home/dir/path/to/notes/my-new-note.md \e[3A\e[61D\e[40C"
+    - delay: 204
+      content: "\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0m\r\n  /Users/stephen/notes-home/dir/path/to/notes/.contents.md \r\n  /Users/stephen/notes-home/dir/path/to/notes/a-brand-new-note.md \r\n\e[36m❯ /Users/stephen/notes-home/dir/path/to/notes/my-new-note.md\e[39m \e[3A\e[61D\e[40C"
+    - delay: 441
+      content: "\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0m\r\n  /Users/stephen/notes-home/dir/path/to/notes/.contents.md \r\n\e[36m❯ /Users/stephen/notes-home/dir/path/to/notes/a-brand-new-note.md\e[39m \r\n  /Users/stephen/notes-home/dir/path/to/notes/my-new-note.md \e[3A\e[61D\e[40C"
+    - delay: 551
+      content: "\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma\r\n  /Users/stephen/notes-home/dir/path/to/notes/.contents.md \r\n\e[36m❯ /Users/stephen/notes-home/dir/path/to/notes/a-brand-new-note.md\e[39m \r\n  /Users/stephen/notes-home/dir/path/to/notes/my-new-note.md \e[3A\e[61D\e[41C\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[41C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/.contents.md\e[39m \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/a-brand-new-note.md \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/my-new-note.md \e[3A\e[61D\e[41C"
+    - delay: 326
+      content: "\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma \r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/.contents.md\e[39m \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/a-brand-new-note.md \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/my-new-note.md \e[3A\e[61D\e[42C\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma \r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[42C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma \r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[42C"
+    - delay: 224
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma b\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[43C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma b\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[43C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma b\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[43C"
+    - delay: 246
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma br\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[44C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma br\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[44C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma br\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[44C"
+    - delay: 104
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bra\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[45C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bra\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[45C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bra\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[45C"
+    - delay: 135
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bran\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[46C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bran\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[46C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bran\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[46C"
+    - delay: 391
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bra\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[45C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bra\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[45C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma bra\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[45C"
+    - delay: 182
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma br\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[44C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma br\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[44C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma br\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[44C"
+    - delay: 175
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma b\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[43C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma b\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[43C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma b\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[43C"
+    - delay: 192
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma \r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[42C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma \r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[42C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma \r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[42C"
+    - delay: 181
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma\r\n  \e[33mNo results...\e[39m\e[1A\e[15D\e[41C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[41C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/.contents.md\e[39m \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/a-brand-new-note.md \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/my-new-note.md \e[3A\e[61D\e[41C"
+    - delay: 384
+      content: "\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/.contents.md\e[39m \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/a-brand-new-note.md \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/my-new-note.md \e[3A\e[61D\e[42C\e[3B\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[42C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36mbrand-new-note.md\e[39m \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/my\e[32m-\e[39mnew-note.md \e[2A\e[61D\e[42C"
+    - delay: 246
+      content: "\e[2B\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-b\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36mbrand-new-note.md\e[39m \r\n  /Users/stephen/notes-home/dir/p\e[32ma\e[39mth/to/notes/my\e[32m-\e[39mnew-note.md \e[2A\e[61D\e[43C\e[2B\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-b\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[43C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-b\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36m\e[32mb\e[39m\e[36mrand-new-note.md\e[39m \e[1A\e[66D\e[43C"
+    - delay: 238
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-br\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36m\e[32mb\e[39m\e[36mrand-new-note.md\e[39m \e[1A\e[66D\e[44C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-br\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[44C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-br\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36m\e[32mb\e[39m\e[36m\e[32mr\e[39m\e[36mand-new-note.md\e[39m \e[1A\e[66D\e[44C"
+    - delay: 95
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-bra\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36m\e[32mb\e[39m\e[36m\e[32mr\e[39m\e[36mand-new-note.md\e[39m \e[1A\e[66D\e[45C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-bra\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[45C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-bra\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36m\e[32mb\e[39m\e[36m\e[32mr\e[39m\e[36m\e[32ma\e[39m\e[36mnd-new-note.md\e[39m \e[1A\e[66D\e[45C"
+    - delay: 111
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-bran\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36m\e[32mb\e[39m\e[36m\e[32mr\e[39m\e[36m\e[32ma\e[39m\e[36mnd-new-note.md\e[39m \e[1A\e[66D\e[46C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-bran\r\n  \e[2mSearching...\e[22m\e[1A\e[14D\e[46C\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0ma-bran\r\n\e[36m❯ /Users/stephen/notes-home/dir/p\e[32ma\e[39m\e[36mth/to/notes/a\e[32m-\e[39m\e[36m\e[32mb\e[39m\e[36m\e[32mr\e[39m\e[36m\e[32ma\e[39m\e[36m\e[32mn\e[39m\e[36md-new-note.md\e[39m \e[1A\e[66D\e[46C"
+    - delay: 424
+      content: "\e[1B\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mSelect the note you'd like to update:\e[22m\e[0m \e[0m\e[36m/Users/stephen/notes-home/dir/path/to/notes/a-\r\nbrand-new-note.md\e[39m\e[17D\e[17C\r\n"
+    - delay: 13
+      content: "\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0m\e[2m(a brand new note) \e[22m\e[52D\e[52C"
+    - delay: 1881
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma\e[34D\e[34C"
+    - delay: 713
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma \e[35D\e[35C"
+    - delay: 166
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma n\e[36D\e[36C"
+    - delay: 81
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma ne\e[37D\e[37C"
+    - delay: 78
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma new\e[38D\e[38C"
+    - delay: 73
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma new \e[39D\e[39C"
+    - delay: 143
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma new t\e[40D\e[40C"
+    - delay: 80
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma new ti\e[41D\e[41C"
+    - delay: 160
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma new tit\e[42D\e[42C"
+    - delay: 88
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma new titl\e[43D\e[43C"
+    - delay: 159
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0ma new title\e[44D\e[44C"
+    - delay: 219
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the title for the note?\e[22m\e[0m \e[0m\e[36ma new title\e[39m\e[44D\e[44C\r\n\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0m\e[2m(something-else\r\n) \e[22m\e[2D\e[2C"
+    - delay: 1476
+      content: "\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0ms\e[72D\e[72C"
+    - delay: 153
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0mso\e[73D\e[73C"
+    - delay: 159
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msom\e[74D\e[74C"
+    - delay: 111
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msome\e[75D\e[75C"
+    - delay: 217
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomet\e[76D\e[76C"
+    - delay: 95
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msometh\e[77D\e[77C"
+    - delay: 136
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomethi\e[78D\e[78C"
+    - delay: 112
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomethin\e[79D\e[79C"
+    - delay: 87
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomething\e[80D\e[80C"
+    - delay: 176
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomething-\e[81D\e[81C"
+    - delay: 560
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomething-n\e[82D\e[82C"
+    - delay: 87
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomething-ne\e[83D\e[83C"
+    - delay: 89
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0msomething-new\e[84D\e[84C"
+    - delay: 768
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the slug for the note? (Will default to kebab-style of title)\e[22m\e[0m \e[0m\e[36msomething-new\e[39m\e[84D\e[84C\r\n\e[32m?\e[39m \e[1mWhat's the category for the note? (Comma separated)\e[22m\e[0m \e[0m\e[2m(something awesome) \e[22m\e[74D\e[74C"
+    - delay: 2809
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the category for the note? (Comma separated)\e[22m\e[0m \e[0m\e[36msomething awesome\e[39m\e[71D\e[71C\r\n\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0m\e[2m(one,four,five) \e[22m\e[59D\e[59C"
+    - delay: 1318
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mo\e[44D\e[44C"
+    - delay: 128
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mon\e[45D\e[45C"
+    - delay: 141
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone\e[46D\e[46C"
+    - delay: 192
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,\e[47D\e[47C"
+    - delay: 248
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,f\e[48D\e[48C"
+    - delay: 105
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,fi\e[49D\e[49C"
+    - delay: 159
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,fiv\e[50D\e[50C"
+    - delay: 105
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,five\e[51D\e[51C"
+    - delay: 120
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,five,\e[52D\e[52C"
+    - delay: 294
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,five,s\e[53D\e[53C"
+    - delay: 104
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,five,si\e[54D\e[54C"
+    - delay: 161
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0mone,five,six\e[55D\e[55C"
+    - delay: 680
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mAny tags for the note? (Comma separated)\e[22m\e[0m \e[0m\e[36mone,five,six\e[39m\e[55D\e[55C\r\n\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m\e[2m(2020-09-05) \e[22m\e[46D\e[46C"
+    - delay: 2262
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2\e[34D\e[34C"
+    - delay: 159
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m20\e[35D\e[35C"
+    - delay: 223
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m202\e[36D\e[36C"
+    - delay: 152
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2020\e[37D\e[37C"
+    - delay: 390
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2020-\e[38D\e[38C"
+    - delay: 649
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2020-1\e[39D\e[39C"
+    - delay: 216
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2020-10\e[40D\e[40C"
+    - delay: 384
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2020-10-\e[41D\e[41C"
+    - delay: 209
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2020-10-0\e[42D\e[42C"
+    - delay: 262
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m2020-10-01\e[43D\e[43C"
+    - delay: 344
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the date for the note?\e[22m\e[0m \e[0m\e[36m2020-10-01\e[39m\e[43D\e[43C\r\n\e[32m?\e[39m \e[1mWhat is the publish date for the note?\e[22m\e[0m \e[0m\e[2m(2020-09-05) \e[22m\e[54D\e[54C"
+    - delay: 1263
+      content: "\e[2K\e[G\e[32m?\e[39m \e[1mWhat is the publish date for the note?\e[22m\e[0m \e[0m\e[36m2020-09-05\e[39m\e[51D\e[51C\r\n\e[?25l\e[32m?\e[39m \e[1mIs the note private?\e[22m\e[0m \e[0m\e[2m(Use arrow keys)\e[22m\r\n\e[36m❯ No\e[39m \r\n  Yes \e[6D\e[6C"
+    - delay: 1000
+      content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mIs the note private?\e[22m\e[0m \e[0m\e[36mNo\e[39m\e[25D\e[25C\r\n\e[?25h\e[?25l\e[32m?\e[39m \e[1mWhat's the stage of the document?\e[22m\e[0m \e[0m\e[2m(Use arrow keys)\e[22m\r\n\e[36m❯ draft\e[39m \r\n  in_review \r\n  ready_for_review \r\n  published \e[12D\e[12C"
+    - delay: 957
+      content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the stage of the document?\e[22m\e[0m \e[0m\r\n  draft \r\n\e[36m❯ in_review\e[39m \r\n  ready_for_review \r\n  published \e[12D\e[12C"
+    - delay: 200
+      content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the stage of the document?\e[22m\e[0m \e[0m\r\n  draft \r\n  in_review \r\n\e[36m❯ ready_for_review\e[39m \r\n  published \e[12D\e[12C"
+    - delay: 992
+      content: "\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[1A\e[2K\e[G\e[32m?\e[39m \e[1mWhat's the stage of the document?\e[22m\e[0m \e[0m\e[36mready_for_review\e[39m\e[52D\e[52C\r\n\e[?25h\e[?25h"
+    - delay: 5
+      content: "% "
+    - delay: 1278
+      content: l
+    - delay: 187
+      content: e
+    - delay: 62
+      content: s
+    - delay: 232
+      content: s
+    - delay: 576
+      content: " "
+    - delay: 376
+      content: "~"
+    - delay: 100
+      content: /
+    - delay: 100
+      content: "n"
+    - delay: 100
+      content: otes-home/
+    - delay: 100
+      content: dir/
+    - delay: 100
+      content: path/
+    - delay: 100
+      content: to/
+    - delay: 100
+      content: notes/
+    - delay: 100
+      content: a
+    - delay: 100
+      content: "-brand-new-no\rote.md "
+    - delay: 500
+      content: "\r\n\e[?1049h\e[?1h\e=\r---\r\ntitle: \"a new title\"\r\nslug: \"something-new\"\r\nstage: \"ready_for_review\"\r\ndate: \"2020-10-01\"\r\npublish: \"2020-09-05\"\r\nprivate: false\r\ncategory: [\"something awesome\"]\r\ntags: [\"one\", \"five\", \"six\"]\r\n---\r\n                \r\n\e[7m/Users/stephen/notes-home/dir/path/to/notes/a-brand-new-note.md (END)\e[27m\e[K"
+    - delay: 5000
+      content: "\r\e[K\e[?1l\e>\e[?1049l% "
+    - delay: 100
+      content: "logout\r\n"
