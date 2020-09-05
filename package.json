@@ -1,6 +1,6 @@
 {
     "name": "note-mgr-cli",
-    "version": "0.0.1",
+    "version": "0.0.2-0",
     "description": "A CLI for managing drafts, ideas, and notes",
     "main": "index.js",
     "bin": {
