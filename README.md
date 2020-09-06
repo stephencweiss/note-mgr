@@ -225,16 +225,16 @@ This project follows [SemVer](https://semver.org/) and an adaptation of the [con
 
 Commits are prefixed with the following emoji to indicate their purpose.
 
-| Symbol | code                    | Interpretation           |
-| ------ | ----------------------- | ------------------------ |
-| ✨     | :sparkles:              | feature                  |
-| 🐛     | :bug:                   | fix                      |
-| 💅     | :nail-polish:           | style                    |
-| 🧼     | :soap:                  | chore                    |
-| 📝     | :memo:                  | docs                     |
-| 🐎     | :racehorse:             | perf                     |
-| 🧪     | :lab:                   | test                     |
-| 🏗️     | :building-construction: | refactor                 |
-| 🧰     | :toolbox:               | tooling / infrastructure |
-| 🚀     | :rocket:                | major version bump       |
-| 📦     | :package:               | minor version bump       |
+| Symbol | code                      | Interpretation           |
+| ------ | ------------------------- | ------------------------ |
+| ✨     | `:sparkles:`              | feature                  |
+| 🐛     | `:bug:`                   | fix                      |
+| 💅     | `:nail-polish:`           | style                    |
+| 🧼     | `:soap:`                  | chore                    |
+| 📝     | `:memo:`                  | docs                     |
+| 🐎     | `:racehorse:`             | perf                     |
+| 🧪     | `:lab:`                   | test                     |
+| 🏗️     | `:building-construction:` | refactor                 |
+| 🧰     | `:toolbox:`               | tooling / infrastructure |
+| 🚀     | `:rocket:`                | major version bump       |
+| 📦     | `:package:`               | minor version bump       |
