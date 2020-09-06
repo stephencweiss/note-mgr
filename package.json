@@ -1,11 +1,6 @@
 {
     "name": "note-mgr-cli",
     "version": "0.0.3",
-    "description": "A CLI for managing drafts, ideas, and notes",
-    "main": "index.js",
-    "bin": {
-        "nom": "index.js"
-    },
     "scripts": {
         "lint:check": "prettier --config .prettierrc.js --check 'src/**/*{.ts, .js}'",
         "lint:fix": "prettier --config .prettierrc.js --write 'src/**/*{.ts, .js}' ",
@@ -17,6 +12,24 @@
         "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
         "build:js": "babel src --out-dir dist --extensions \".ts,.tsx\" --source-maps inline --ignore \"**/*.test.*\""
     },
+    "description": "A CLI for managing notes written in markdown. Designed with publishing and searching in mind.",
+    "main": "index.js",
+    "bin": {
+        "nom": "index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/stephencweiss/note-mgr.git"
+    },
+    "bugs": {
+        "url": "https://github.com/stephencweiss/note-mgr/issues"
+    },
+    "keywords": [
+        "cli",
+        "markdown",
+        "notes",
+        "tool"
+    ],
     "author": "Stephen Weiss <stephen.c.weiss@gmail.com>",
     "license": "MIT",
     "devDependencies": {
