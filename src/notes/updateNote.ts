@@ -28,7 +28,7 @@ export async function updateNote(args: Command) {
     let frontmatter
 
     if (!(await testPath(notePath))) {
-        notePath = await findNote(config)
+        notePath = await findNote(config, "update")
         // delete args.args // remove args since it was inaccurate
     }
 

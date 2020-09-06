@@ -8,6 +8,7 @@ import {
     ConfigurationKeys,
     DocumentStages,
     FrontmatterKeys,
+    NoteAction,
     validateDt,
 } from "../utils"
 
@@ -139,7 +140,10 @@ export async function testPath(notePath: string) {
         .catch(() => false)
 }
 
-export async function findNote(config: Map<ConfigurationKeys, string>) {
+export async function findNote(
+    config: Map<ConfigurationKeys, string>,
+    action: NoteAction
+) {
     const rootDir = config.get(ConfigurationKeys.NOTES_ROOT_DIR)!
     const questions = [
         {
@@ -150,7 +154,7 @@ export async function findNote(config: Map<ConfigurationKeys, string>) {
             excludeFilter: (nodePath: string) => nodePath.startsWith("."),
             itemType: "file",
             rootPath: rootDir,
-            message: "Select the note you'd like to update:",
+            message: `Select the note you'd like to ${action}:`,
             default: "",
             suggestOnly: false,
             depthLimit: 0,
