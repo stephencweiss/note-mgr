@@ -8,7 +8,8 @@ import {
     ConfigurationKeys,
     DocumentStages,
     FrontmatterKeys,
-    validateDt,
+    isValidDt,
+    formatDt,
 } from "../utils"
 
 const fsPromises = fs.promises
@@ -37,8 +38,7 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
         }
         frontmatter += `\n`
     }
-    return `---\n${frontmatter}---
-    `
+    return `---\n${frontmatter}---\n`
 }
 
 export function readNote(path: string) {
@@ -77,16 +77,19 @@ export function parseOptions(
         FrontmatterKeys.stage,
         stage || DocumentStages.Draft
     )
+
     updateOptions(
         cliSetOptions,
         FrontmatterKeys.date,
-        (validateDt(date, defaultDateFormat) && date) || TODAY
+        (isValidDt(date) && formatDt(date)) || TODAY
     )
+
     updateOptions(
         cliSetOptions,
         FrontmatterKeys.publish,
-        (validateDt(publish, defaultDateFormat) && publish) || TODAY
+        (isValidDt(publish) && formatDt(publish)) || TODAY
     )
+
     updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
     updateOptions(cliSetOptions, FrontmatterKeys.category, category)
     updateOptions(cliSetOptions, FrontmatterKeys.tags, tags)

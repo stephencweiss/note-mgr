@@ -1,9 +1,9 @@
 import dayjs from "dayjs"
 
-export function validateDt(date: string, format: string = "YYYY-MM-DD") {
-    return dayjs(date, format).format(format) === date
+export function isValidDt(date: string) {
+    return dayjs(date).isValid()
 }
 
-export function formatDt(date: string, format: string = "YYYY-MM-DD") {
+export function formatDt(date: string, format?: string) {
     return dayjs(date).format(format)
 }
