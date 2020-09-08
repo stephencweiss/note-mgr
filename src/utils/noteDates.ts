@@ -1,6 +1,7 @@
 import chalk from "chalk"
 import dayjs from "dayjs"
-import { Notes, Frontmatter } from "."
+import { Notes } from "./notes"
+import { Frontmatter } from "./contentHelpers"
 
 export enum Published {
     First = "FIRST",
