@@ -8,9 +8,9 @@ import {
     ConfigurationKeys,
     DocumentStages,
     generateFrontmatter,
+    Notes,
     parseOptions,
     testPath,
-    readNote,
     findNote,
     saveNoteToDisk,
 } from "../utils"
@@ -22,15 +22,14 @@ export async function updateNote(args: Command) {
     const config = new Config().readConfig()
     const rootDir = config.get(ConfigurationKeys.NOTES_ROOT_DIR)!
     const fileExt = config.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)!
-    let notePath = path.resolve(rootDir, `${args.slug}.${fileExt}`)
+    let filePath = path.resolve(rootDir, `${args.slug}.${fileExt}`)
     let frontmatter
 
-    if (!(await testPath(notePath))) {
-        notePath = await findNote(config)
-        // delete args.args // remove args since it was inaccurate
+    if (!(await testPath(filePath))) {
+        filePath = await findNote(config)
     }
 
-    const note = readNote(notePath)
+    const note = new Notes().readNote(filePath)
     const body = note.content
     const currentFrontmatter = note.data
 
@@ -48,10 +47,10 @@ export async function updateNote(args: Command) {
     }
 
     saveNoteToDisk({
-        filePath: notePath,
+        filePath: filePath,
         body: `${generateFrontmatter(frontmatter)}${body}`,
     })
 
     const content = new Content()
-    content.updateNote({ frontmatter })
+    content.updateNote({ frontmatter, filePath })
 }

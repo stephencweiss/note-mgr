@@ -18,12 +18,15 @@ export class NoteDates extends Notes {
         }
     }
     async published() {
-        const notes = await new Notes().frontMatter()
+        const notes = await new Notes().allNotesFrontmatter()
         let published = notes.filter((note) => note.publish)
 
         if (this.style === Published.Recent) {
             const TODAY = dayjs()
-            published = published.filter((note) => TODAY.isAfter(note.publish))
+            published = published.filter(
+                (note: Frontmatter & { path: string }) =>
+                    TODAY.isAfter(note.publish)
+            )
         }
 
         const sortFn = this.pickSort(this.style)

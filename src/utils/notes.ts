@@ -27,16 +27,34 @@ export class Notes extends Config {
                 throw new Error(`Failed to read ${rootDir}`)
             })
     }
-    async frontMatter() {
-        return (await this.list())
-            .map((file) => {
-                const contents = matter.read(file)
 
-                return {
-                    path: file,
-                    ...contents.data,
-                } as Frontmatter & { path: string }
-            })
+    /**
+     *
+     * @param filePath
+     * @return {} - An object of Frontmatter & the file path
+     */
+    readNote(filePath: string) {
+        return matter.read(filePath)
+    }
+
+    /**
+     *
+     * @param filePath
+     * @return {} - An object of Frontmatter & the file path
+     */
+    getFrontmatter(filePath: string) {
+        if (!matter.test(filePath)) {
+            return { path: filePath } as Frontmatter & { path: string }
+        }
+        return {
+            path: filePath,
+            ...this.readNote(filePath).data,
+        } as Frontmatter & { path: string }
+    }
+
+    async allNotesFrontmatter() {
+        return (await this.list())
+            .map((file) => this.getFrontmatter(file))
             .filter((note) => Object.keys(note).length > 1) // filter out any notes where the only key is path
     }
 }

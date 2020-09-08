@@ -55,6 +55,7 @@ interface IFindNote {
 interface IUpdateNote {
     frontmatter: Map<FrontmatterKeys, any>
     dupeCheck?: boolean
+    filePath?: string
 }
 
 /**
@@ -111,9 +112,9 @@ export class Content extends Config {
         this.updateNote({ frontmatter, dupeCheck: true })
     }
 
-    async updateNote({ frontmatter, dupeCheck }: IUpdateNote) {
+    async updateNote({ frontmatter, dupeCheck, filePath }: IUpdateNote) {
         const { headers, divider, body } = this.readContent()
-        const row = this.convertFrontmatterToRow(frontmatter)
+        const row = this.convertFrontmatterToRow(frontmatter, filePath)
 
         if (dupeCheck && body.has(row.get("title"))) {
             throw new Error(
@@ -166,18 +167,12 @@ export class Content extends Config {
             .map((el) => el.trim())
     }
 
-    private getRowTitle(
-        title: FrontmatterKeys.title,
-        slug: FrontmatterKeys.slug
-    ) {
-        return `[${title}](${slug})`
-    }
-
     private convertFrontmatterToRow(
-        noteFrontmatter: Map<FrontmatterKeys, any>
+        noteFrontmatter: Map<FrontmatterKeys, any>,
+        filePath?: string
     ) {
         const row = new Map() as RowMap
-        row.set("title", generateRowTitle(noteFrontmatter))
+        row.set("title", generateRowTitle(noteFrontmatter, filePath))
         row.set("private", noteFrontmatter.get(FrontmatterKeys.private))
         row.set("publish", noteFrontmatter.get(FrontmatterKeys.publish))
         row.set("date", noteFrontmatter.get(FrontmatterKeys.date))

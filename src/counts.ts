@@ -33,14 +33,10 @@ class CountNotes extends Notes {
     constructor(styles: Style[]) {
         super()
         this.styles = styles
-        this.fetchNotes().then(() => {
+        this.allNotesFrontmatter().then(() => {
             this.total = this.notes.length
             styles.forEach((style) => this.byStyle(style))
         })
-    }
-    private async fetchNotes() {
-        this.notes = await this.frontMatter()
-        return this.notes
     }
     print(style: Style) {
         console.log(chalk.bold(`The count of notes by ${style}:`))

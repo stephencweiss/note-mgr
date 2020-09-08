@@ -3,9 +3,9 @@ import {
     Content,
     FrontmatterKeys,
     findNote,
-    readNote,
     removeNoteFile,
     parseOptions,
+    Notes,
 } from "../utils"
 
 export async function removeNote() {
@@ -13,8 +13,10 @@ export async function removeNote() {
         const config = new Config().readConfig()
         const content = new Content()
         const notePath = await findNote(config)
-        const note = readNote(notePath)
-        const frontmatter = parseOptions(note.data, config)
+        const frontmatter = parseOptions(
+            new Notes().getFrontmatter(notePath),
+            config
+        )
         await removeNoteFile(notePath)
         content.removeRow(frontmatter)
         console.log(
