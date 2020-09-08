@@ -1,4 +1,4 @@
-import { findNote, readNote, removeNoteFile } from "./noteHelpers"
+import { findNote, readNote, removeNoteFile } from "../utils/noteHelpers"
 import { Config, Content, FrontmatterKeys } from "../utils"
 
 export async function removeNote() {

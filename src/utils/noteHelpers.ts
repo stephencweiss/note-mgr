@@ -10,7 +10,7 @@ import {
     FrontmatterKeys,
     isValidDt,
     formatDt,
-} from "../utils"
+} from "."
 
 const fsPromises = fs.promises
 

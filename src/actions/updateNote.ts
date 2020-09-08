@@ -7,16 +7,14 @@ import {
     FrontmatterKeys,
     ConfigurationKeys,
     DocumentStages,
-} from "../utils"
-import {
     generateFrontmatter,
     parseOptions,
-    solicitNoteMetadata,
     testPath,
     readNote,
     findNote,
     saveNoteToDisk,
-} from "."
+} from "../utils"
+import { solicitNoteMetadata } from "."
 
 inquirer.registerPrompt("fuzzypath", require("inquirer-fuzzy-path"))
 

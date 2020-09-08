@@ -1,8 +1,12 @@
 import { prompt } from "inquirer"
 import dayjs from "dayjs"
 import kebabCase from "lodash.kebabcase"
-import { ConfigurationKeys, DocumentStages, FrontmatterKeys } from "../utils"
-import { updateOptions } from "."
+import {
+    ConfigurationKeys,
+    DocumentStages,
+    FrontmatterKeys,
+    updateOptions,
+} from "../utils"
 
 interface ISolicitNoteMetadata {
     title?: string

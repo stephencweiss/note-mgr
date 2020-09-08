@@ -1,15 +1,16 @@
 import fs from "fs"
 import chalk from "chalk"
 import { Command } from "commander"
-import { Config, Content, FrontmatterKeys } from "../utils"
-
 import {
+    Config,
+    Content,
+    FrontmatterKeys,
     generateFilePath,
     generateFrontmatter,
     parseOptions,
-    solicitNoteMetadata,
     saveNoteToDisk,
-} from "."
+} from "../utils"
+import { solicitNoteMetadata } from "."
 const fsPromises = fs.promises
 
 /**
