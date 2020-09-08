@@ -41,6 +41,16 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
     return `---\n${frontmatter}---\n`
 }
 
+/**
+ * Generate the [title](slug) combination for use in the `.contents` file
+ * @param options
+ */
+export function generateRowTitle(options: Map<FrontmatterKeys, any>) {
+    return `[${options.get(FrontmatterKeys.title)}](${options.get(
+        FrontmatterKeys.slug
+    )})`
+}
+
 export function readNote(path: string) {
     return matter(fs.readFileSync(path, { encoding: "utf8" }))
 }

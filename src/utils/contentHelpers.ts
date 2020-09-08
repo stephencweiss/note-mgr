@@ -2,6 +2,7 @@ import chalk from "chalk"
 import fs from "fs"
 import path from "path"
 import { Config, ConfigurationKeys } from "."
+import { generateRowTitle } from "./noteHelpers"
 
 export enum DocumentStages {
     Draft = "draft",
@@ -176,13 +177,7 @@ export class Content extends Config {
         noteFrontmatter: Map<FrontmatterKeys, any>
     ) {
         const row = new Map() as RowMap
-        row.set(
-            "title",
-            this.getRowTitle(
-                noteFrontmatter.get(FrontmatterKeys.title),
-                noteFrontmatter.get(FrontmatterKeys.slug)
-            )
-        )
+        row.set("title", generateRowTitle(noteFrontmatter))
         row.set("private", noteFrontmatter.get(FrontmatterKeys.private))
         row.set("publish", noteFrontmatter.get(FrontmatterKeys.publish))
         row.set("date", noteFrontmatter.get(FrontmatterKeys.date))
@@ -190,8 +185,8 @@ export class Content extends Config {
         return row
     }
 
-    removeRow(title: FrontmatterKeys.title, slug: FrontmatterKeys.slug) {
-        const key = this.getRowTitle(title, slug)
+    removeRow(noteFrontmatter: Map<FrontmatterKeys, any>) {
+        const key = generateRowTitle(noteFrontmatter)
         const { headers, divider, body } = this.readContent()
         if (!this.findRow({ key, body })) {
             console.log(`No note exists with the key ${key}`)
