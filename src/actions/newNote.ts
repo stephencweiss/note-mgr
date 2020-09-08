@@ -11,7 +11,6 @@ import {
     saveNoteToDisk,
 } from "../utils"
 import { solicitNoteMetadata } from "."
-
 const fsPromises = fs.promises
 
 /**

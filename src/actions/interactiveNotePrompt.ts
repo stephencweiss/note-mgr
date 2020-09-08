@@ -8,6 +8,7 @@ import {
     updateOptions,
 } from "../utils"
 
+
 interface ISolicitNoteMetadata {
     title?: string
     config: Map<ConfigurationKeys, any>

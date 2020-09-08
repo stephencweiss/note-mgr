@@ -16,6 +16,7 @@ import {
 } from "../utils"
 import { solicitNoteMetadata } from "."
 
+
 inquirer.registerPrompt("fuzzypath", require("inquirer-fuzzy-path"))
 
 export async function updateNote(args: Command) {
