@@ -1,7 +1,5 @@
 import fs from "fs"
 import dayjs from "dayjs"
-import { prompt } from "inquirer"
-import matter from "gray-matter"
 import kebabCase from "lodash.kebabcase"
 import {
     Config,
@@ -11,8 +9,6 @@ import {
     isValidDt,
     formatDt,
 } from "."
-
-const fsPromises = fs.promises
 
 export function generateFilePath(
     config: Config,
@@ -142,43 +138,4 @@ export function saveNoteToDisk({
             throw new Error(`Failed to save note at ${filePath}`)
         }
     })
-}
-
-export async function testPath(notePath: string) {
-    return await fsPromises
-        .access(notePath)
-        .then(() => true)
-        .catch(() => false)
-}
-
-export async function findNote(config: Map<ConfigurationKeys, string>) {
-    const rootDir = config.get(ConfigurationKeys.NOTES_ROOT_DIR)!
-    const questions = [
-        {
-            type: "fuzzypath",
-            name: "filePath",
-            excludePath: (nodePath: string) =>
-                nodePath.startsWith("node_modules"),
-            excludeFilter: (nodePath: string) =>
-                nodePath.startsWith(`${rootDir}/.`),
-            itemType: "file",
-            rootPath: rootDir,
-            message:
-                "Select the note you'd like to update (excludes .dotfiles):",
-            default: "",
-            suggestOnly: false,
-            depthLimit: 0,
-        },
-    ]
-
-    return await prompt(questions).then(
-        (answers) => answers && (answers.filePath as string)
-    )
-}
-
-export function removeNoteFile(filePath: string) {
-    if (!testPath(filePath)) {
-        throw new Error(`No file exists at path ${filePath}`)
-    }
-    fs.unlinkSync(filePath)
 }

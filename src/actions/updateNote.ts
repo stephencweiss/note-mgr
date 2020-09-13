@@ -10,8 +10,6 @@ import {
     generateFrontmatter,
     Notes,
     parseOptions,
-    testPath,
-    findNote,
     saveNoteToDisk,
 } from "../utils"
 import { solicitNoteMetadata } from "."
@@ -24,12 +22,12 @@ export async function updateNote(args: Command) {
     const fileExt = config.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)!
     let filePath = path.resolve(rootDir, `${args.slug}.${fileExt}`)
     let frontmatter
-
-    if (!(await testPath(filePath))) {
-        filePath = await findNote(config)
+    const notes = new Notes()
+    if (!(await notes.testPath(filePath))) {
+        filePath = await notes.find()
     }
 
-    const note = new Notes().readNote(filePath)
+    const note = notes.read(filePath)
     const body = note.content
     const currentFrontmatter = note.data
 
