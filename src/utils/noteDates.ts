@@ -13,39 +13,44 @@ export class NoteDates extends Notes {
     style: Published = Published.Latest
     constructor(style: Published) {
         super()
-        if (style) {
-            this.style = style
-        }
+        this.style = style
     }
     async published() {
-        const notes = await new Notes().allNotesFrontmatter()
-        let published = notes.filter((note) => note.publish)
+        try {
+            const notes = await new Notes().allNotesFrontmatter()
 
-        if (this.style === Published.Recent) {
-            const TODAY = dayjs()
-            published = published.filter((note: Frontmatter) =>
-                TODAY.isAfter(note.publish)
+            let published = notes.filter(
+                (note) => note && note.publish
+            ) as Frontmatter[]
+
+            if (this.style === Published.Recent) {
+                const TODAY = dayjs()
+                published = published.filter((note: Frontmatter) =>
+                    TODAY.isAfter(note.publish)
+                )
+            }
+
+            const sortFn = this.pickSort(this.style)
+            const sorted = published.sort(sortFn)
+
+            console.log(
+                chalk.bold(
+                    `The published date according to the ${this.style} filter is:`
+                )
             )
+            console.log(chalk.bold(sorted[sorted.length - 1].publish))
+        } catch (error) {
+            throw new Error("Failed to calculate dates\n${error}")
         }
-
-        const sortFn = this.pickSort(this.style)
-        const sorted = published.sort(sortFn)
-
-        console.log(
-            chalk.bold(
-                `The published date according to the ${this.style} filter is:`
-            )
-        )
-        console.log(chalk.bold(sorted[sorted.length - 1].publish))
     }
 
     private pickSort(style: Published) {
         if (style === Published.First) {
             return (a: Frontmatter, b: Frontmatter) =>
-                a.publish > b.publish ? -1 : 1
+                dayjs(a.publish).isAfter(dayjs(b.publish)) ? -1 : 1
         } else {
             return (a: Frontmatter, b: Frontmatter) =>
-                a.publish < b.publish ? -1 : 1
+                dayjs(b.publish).isAfter(dayjs(a.publish)) ? -1 : 1
         }
     }
 }

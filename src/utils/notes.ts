@@ -131,18 +131,30 @@ export class Notes extends Config {
      * @return {} - An object of Frontmatter & the file path
      */
     getFrontmatter(filePath: string) {
-        return {
-            ...this.read(filePath).data,
-        } as Frontmatter
+        try {
+            return {
+                ...this.read(filePath).data,
+            } as Frontmatter
+        } catch (error) {
+            throw new Error(
+                `Failed to read frontmatter for file at ${filePath}\n${error}`
+            )
+        }
     }
 
     /**
      * Get the frontmatter for all notes managed by Nom,
      * Notes where there is only a key are filtered out (e.g., `.contents` which has no frontmatter).
      */
-    async allNotesFrontmatter() {
-        return (await this.list())
-            .map((file) => this.getFrontmatter(file))
-            .filter((note) => Object.keys(note).length > 1)
+    async allNotesFrontmatter(): Promise<Frontmatter[]> {
+        try {
+            return (await this.list())
+                .map((file) => this.getFrontmatter(file))
+                .filter(
+                    (note) => note && Object.keys(note).length > 1
+                ) as Frontmatter[]
+        } catch (error) {
+            throw new Error("Failed to get frontmatter\n${error}")
+        }
     }
 }
