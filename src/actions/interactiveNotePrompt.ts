@@ -5,13 +5,13 @@ import {
     ConfigurationKeys,
     DocumentStages,
     FrontmatterKeys,
-    updateOptions,
+    Frontmatter,
 } from "../utils"
 
 interface ISolicitNoteMetadata {
     title?: string
     config: Map<ConfigurationKeys, any>
-    options: Map<any, any>
+    options: Frontmatter
 }
 
 export async function solicitNoteMetadata({
@@ -25,20 +25,20 @@ export async function solicitNoteMetadata({
             type: "input",
             name: FrontmatterKeys.title,
             message: "What's the title for the note?",
-            default: options.get("title") || title,
+            default: options["title"] || title,
         },
         {
             type: "input",
             name: FrontmatterKeys.slug,
             message:
                 "What's the slug for the note? (Will default to kebab-style of title)",
-            default: options.get("slug") || kebabCase(title),
+            default: options["slug"] || kebabCase(title),
         },
         {
             type: "input",
             name: FrontmatterKeys.category,
             message: "What's the category for the note? (Comma separated)",
-            default: String(options.get("category")).split(", "),
+            default: String(options["category"]).split(", "),
             filter: (args: any) =>
                 String(args)
                     .split(",")
@@ -48,7 +48,7 @@ export async function solicitNoteMetadata({
             type: "input",
             name: FrontmatterKeys.tags,
             message: "Any tags for the note? (Comma separated)",
-            default: String(options.get("tags")).split(", "),
+            default: String(options["tags"]).split(", "),
             filter: (args: any) =>
                 String(args)
                     .split(",")
@@ -100,17 +100,13 @@ export async function solicitNoteMetadata({
     ]
 
     await prompt(questions).then((answers) => {
-        updateOptions(options, FrontmatterKeys.title, answers.title)
-        updateOptions(
-            options,
-            FrontmatterKeys.slug,
-            answers.slug || kebabCase(answers.title)
-        )
-        updateOptions(options, FrontmatterKeys.stage, answers.stage)
-        updateOptions(options, FrontmatterKeys.publish, answers.publish)
-        updateOptions(options, FrontmatterKeys.date, answers.date)
-        updateOptions(options, FrontmatterKeys.private, answers.private)
-        updateOptions(options, FrontmatterKeys.category, answers.category)
-        updateOptions(options, FrontmatterKeys.tags, answers.tags)
+        options[FrontmatterKeys.title] = answers.title
+        options[FrontmatterKeys.slug] = answers.slug || kebabCase(answers.title)
+        options[FrontmatterKeys.stage] = answers.stage
+        options[FrontmatterKeys.publish] = answers.publish
+        options[FrontmatterKeys.date] = answers.date
+        options[FrontmatterKeys.private] = answers.private
+        options[FrontmatterKeys.category] = answers.category
+        options[FrontmatterKeys.tags] = answers.tags
     })
 }

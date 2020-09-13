@@ -23,9 +23,8 @@ export class NoteDates extends Notes {
 
         if (this.style === Published.Recent) {
             const TODAY = dayjs()
-            published = published.filter(
-                (note: Frontmatter & { path: string }) =>
-                    TODAY.isAfter(note.publish)
+            published = published.filter((note: Frontmatter) =>
+                TODAY.isAfter(note.publish)
             )
         }
 
@@ -42,15 +41,11 @@ export class NoteDates extends Notes {
 
     private pickSort(style: Published) {
         if (style === Published.First) {
-            return (
-                a: Frontmatter & { path: string },
-                b: Frontmatter & { path: string }
-            ) => (a.publish > b.publish ? -1 : 1)
+            return (a: Frontmatter, b: Frontmatter) =>
+                a.publish > b.publish ? -1 : 1
         } else {
-            return (
-                a: Frontmatter & { path: string },
-                b: Frontmatter & { path: string }
-            ) => (a.publish < b.publish ? -1 : 1)
+            return (a: Frontmatter, b: Frontmatter) =>
+                a.publish < b.publish ? -1 : 1
         }
     }
 }

@@ -2,27 +2,16 @@ import fs from "fs"
 import dayjs from "dayjs"
 import kebabCase from "lodash.kebabcase"
 import {
-    Config,
-    ConfigurationKeys,
     DocumentStages,
     FrontmatterKeys,
+    Frontmatter,
     isValidDt,
     formatDt,
 } from "."
 
-export function generateFilePath(
-    config: Config,
-    options: Map<FrontmatterKeys, any>
-): string {
-    const configSettings = config.readConfig()
-    return `${config.nomRootPath}/${options.get(
-        FrontmatterKeys.slug
-    )}.${configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)}`
-}
-
-export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
+export function generateFrontmatter(options: Frontmatter) {
     let frontmatter = ""
-    for (let [key, val] of options) {
+    for (let [key, val] of Object.entries(options)) {
         if (key === "private") {
             frontmatter += `private: ${val}` // special handling due to Private being a restricted word in JS
         } else if (typeof val === "string") {
@@ -38,31 +27,12 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
 }
 
 /**
- * Generate the [title](slug) combination for use in the `.contents` file
- * @param options
- */
-export function generateRowTitle(
-    options: Map<FrontmatterKeys, any>,
-    filePath?: string
-) {
-    return `[${options.get(FrontmatterKeys.title)}](${
-        filePath ?? options.get(FrontmatterKeys.slug)
-    })`
-}
-
-/**
  * Creates a new options map for the note - the order in which options are updated matters since we're using a Map.
  * @param args
  * @param config
  */
-export function parseOptions(
-    args: any,
-    config: Map<ConfigurationKeys, string>
-): Map<FrontmatterKeys, any> {
-    const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
+export function parseArgs(args: any): Frontmatter {
     const TODAY = dayjs().format("YYYY-MM-DD")
-    const title = args.title
-    const slug = kebabCase(args.slug) || kebabCase(title)
     const {
         category,
         date,
@@ -70,60 +40,23 @@ export function parseOptions(
         publish,
         stage,
         tags,
-        custom,
+        title,
     } = args
+    const slug = kebabCase(args.slug) || kebabCase(title)
 
-    let cliSetOptions = new Map()
+    let options = {} as Frontmatter
 
-    updateOptions(cliSetOptions, FrontmatterKeys.title, title)
-    updateOptions(cliSetOptions, FrontmatterKeys.slug, slug || kebabCase(title))
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.stage,
-        stage || DocumentStages.Draft
-    )
-
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.date,
-        (isValidDt(date) && formatDt(date)) || TODAY
-    )
-
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.publish,
+    options[FrontmatterKeys.title] = title
+    options[FrontmatterKeys.slug] = slug
+    options[FrontmatterKeys.stage] = stage || DocumentStages.Draft
+    options[FrontmatterKeys.date] = (isValidDt(date) && formatDt(date)) || TODAY
+    options[FrontmatterKeys.publish] =
         (isValidDt(publish) && formatDt(publish)) || TODAY
-    )
+    options[FrontmatterKeys.private] = privateKey || false
+    options[FrontmatterKeys.category] = category
+    options[FrontmatterKeys.tags] = tags
 
-    updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
-    updateOptions(cliSetOptions, FrontmatterKeys.category, category)
-    updateOptions(cliSetOptions, FrontmatterKeys.tags, tags)
-    parseCustom(cliSetOptions, custom)
-    return cliSetOptions
-}
-
-export function updateOptions(
-    optionsMap: Map<FrontmatterKeys | any, any>,
-    key: FrontmatterKeys,
-    value?: any
-) {
-    optionsMap.set(key, value)
-}
-
-/**
- * If a custom option is included, parse it and add to the options passed in from the CLI like a regular option to be
- * included in the frontmatter.
- * @param cliSetOptions
- * @param customArgs
- */
-function parseCustom(
-    cliSetOptions: Map<FrontmatterKeys | any, any>,
-    customArgs: string[]
-) {
-    customArgs?.map((el) => {
-        const [key, value] = el.split(":")
-        cliSetOptions.set(key, value)
-    })
+    return options
 }
 
 export function saveNoteToDisk({

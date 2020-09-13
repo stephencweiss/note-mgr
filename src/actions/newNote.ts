@@ -4,10 +4,10 @@ import { Command } from "commander"
 import {
     Config,
     Content,
-    FrontmatterKeys,
-    generateFilePath,
+    Frontmatter,
+    Notes,
     generateFrontmatter,
-    parseOptions,
+    parseArgs,
     saveNoteToDisk,
 } from "../utils"
 import { solicitNoteMetadata } from "."
@@ -28,17 +28,18 @@ export async function newNote(args: Command) {
 
     const config = new Config()
     const configSettings = config.readConfig()
-    const options = parseOptions(args, configSettings)
+    const options = parseArgs(args)
     if (args.interactive) {
         await solicitNoteMetadata({ config: configSettings, options })
     }
 
-    createFile(config, options)
-    new Content().addNote(options as Map<FrontmatterKeys, string>)
+    createFile(options)
+    new Content().addNote(options)
 }
 
-async function createFile(config: Config, options: Map<any, any>) {
-    const filePath = generateFilePath(config, options)
+async function createFile(options: Frontmatter) {
+    const notes = new Notes()
+    const filePath = notes.generateFilePath(options)
 
     fsPromises
         .access(filePath)

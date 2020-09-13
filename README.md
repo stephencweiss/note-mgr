@@ -85,12 +85,6 @@ All options are available for setting declaratively with the following options:
     $ nom new --title "the note's title"
     ```
 
--   "--custom [key:value...]", "Custom frontmatter"
-
-    ```shell
-    $ nom new --custom "my custom key":"my custom value" --custom "secondKey":"secondValue"
-    ```
-
 -   "--private", "Mark the note private"
 
     ```shell
@@ -141,12 +135,6 @@ To update a new note, at a minimum `nom` requires _either_ a title (`-t --title`
 
     ```shell
     $ nom update --title "the note's title"
-    ```
-
--   "--custom [key:value...]", "Custom frontmatter"
-
-    ```shell
-    $ nom update --custom "my custom key":"my custom value" --custom "secondKey":"secondValue"
     ```
 
 -   "--private", "Mark the note private"

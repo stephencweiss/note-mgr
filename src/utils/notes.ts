@@ -1,5 +1,4 @@
 // Helpers related to working with notes
-
 import fs from "fs"
 import path from "path"
 import { prompt } from "inquirer"
@@ -12,6 +11,48 @@ export class Notes extends Config {
     constructor() {
         super()
         this.config = this.readConfig()
+    }
+
+    /**
+     * Generate a full file path from $HOME
+     * @param options
+     */
+    generateFilePath(options: Frontmatter): string {
+        const configSettings = this.readConfig()
+        return `${this.nomRootPath}/${
+            options[FrontmatterKeys.slug]
+        }.${configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)}`
+    }
+
+    /**
+     * Extract the file path relative to other notes; useful in generating titles for content rows
+     * @param filePath
+     * @example getRelativeFilePath('/User/john/path/to/nom/directory/test-file.md) // test-file
+     *
+     */
+    getRelativeFilePath(filePath: string) {
+        const directoryPath = `${this.nomRootPath}/`
+        const fileExtension = new RegExp(
+            `.${this.readConfig().get(
+                ConfigurationKeys.DEFAULT_FILE_EXTENSION
+            )}$`
+        )
+        return filePath.replace(directoryPath, "").replace(fileExtension, "")
+    }
+
+    /**
+     * Generate the [title](slug) combination for use in the `.contents` file
+     * @param options
+     */
+    generateRowTitle(options: Frontmatter, filePath?: string) {
+        if (!options[FrontmatterKeys.title]) {
+            throw new Error(`No Title in Frontmatter ${options}`)
+        }
+        return `[${options[FrontmatterKeys.title]}](${
+            filePath
+                ? this.getRelativeFilePath(filePath)
+                : options[FrontmatterKeys.slug]
+        })`
     }
 
     /**
@@ -90,13 +131,9 @@ export class Notes extends Config {
      * @return {} - An object of Frontmatter & the file path
      */
     getFrontmatter(filePath: string) {
-        if (!matter.test(filePath)) {
-            return { path: filePath } as Frontmatter & { path: string }
-        }
         return {
-            path: filePath,
             ...this.read(filePath).data,
-        } as Frontmatter & { path: string }
+        } as Frontmatter
     }
 
     /**

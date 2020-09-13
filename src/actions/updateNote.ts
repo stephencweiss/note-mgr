@@ -4,13 +4,12 @@ import inquirer from "inquirer"
 import {
     Config,
     Content,
-    FrontmatterKeys,
     ConfigurationKeys,
     DocumentStages,
     generateFrontmatter,
     Notes,
-    parseOptions,
     saveNoteToDisk,
+    Frontmatter,
 } from "../utils"
 import { solicitNoteMetadata } from "."
 
@@ -29,16 +28,13 @@ export async function updateNote(args: Command) {
 
     const note = notes.read(filePath)
     const body = note.content
-    const currentFrontmatter = note.data
+    const currentFrontmatter = note.data as Frontmatter
 
     if (currentFrontmatter.publish && !currentFrontmatter.stage) {
         currentFrontmatter.stage = DocumentStages.Published
     }
 
-    frontmatter = parseOptions(
-        { ...currentFrontmatter, ...args },
-        config
-    ) as Map<FrontmatterKeys, any>
+    frontmatter = { ...currentFrontmatter, ...args } as Frontmatter
 
     if (args.interactive) {
         await solicitNoteMetadata({ config, options: frontmatter })
