@@ -33,7 +33,7 @@ export class NoteDates extends Notes {
             }
 
             const sortFn = this.pickSort(this.style)
-            const sorted = published.sort(sortFn)
+            const sorted = published.filter(this.filterFn).sort(sortFn)
 
             console.log(
                 chalk.bold(
@@ -56,5 +56,8 @@ export class NoteDates extends Notes {
             return (a: IFrontmatter, b: IFrontmatter) =>
                 dayjs(b.publish).isAfter(dayjs(a.publish)) ? -1 : 1
         }
+    }
+    private filterFn(frontmatter: IFrontmatter) {
+        return isValidDt(frontmatter.publish)
     }
 }
