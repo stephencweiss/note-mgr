@@ -3,7 +3,7 @@ import dayjs from "dayjs"
 import { Notes } from "./notes"
 import { IFrontmatter } from "./contentHelpers"
 import { isValidDt } from "./dateHelpers"
-import { generateErrorMessage, printError } from "./errorMessages"
+import { generateErrorMessage } from "./errorMessages"
 
 export enum Published {
     First = "FIRST",
