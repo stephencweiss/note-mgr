@@ -137,10 +137,19 @@ export class Notes extends Config {
                 throw new Error("Missing root directory. Have you run init?")
             }
             return fs.promises
-                .readdir(path.resolve(rootDir), { encoding: "utf8" })
-                .then((files) => {
-                    return files.map((file) => `${rootDir}/${file}`)
+                .readdir(path.resolve(rootDir), {
+                    encoding: "utf8",
+                    withFileTypes: true,
                 })
+                .then((items) => items.filter((item) => item.isFile()))
+                .then((files) => files.map((file) => `${rootDir}/${file.name}`))
+                .then((files) =>
+                    files.filter(
+                        (file) =>
+                            path.extname(file) ===
+                            `.${this.defaultFileExtension}`
+                    )
+                )
                 .catch((error) => {
                     throw new Error(`Failed to read ${rootDir}\n\t${error}`)
                 })
