@@ -7,6 +7,7 @@ import {
     ConfigurationKeys,
     DocumentStages,
     generateFrontmatter,
+    generateFrontmatterObj,
     Notes,
     saveNoteToDisk,
     IFrontmatter,
@@ -34,7 +35,12 @@ export async function updateNote(args: Command) {
         currentFrontmatter.stage = DocumentStages.Published
     }
 
-    frontmatter = { ...currentFrontmatter, ...args } as Frontmatter
+    let argFrontmatter = Object.fromEntries(
+        Object.entries(generateFrontmatterObj(args)).filter(([_, value]) =>
+            Array.isArray(value) ? value.length : Boolean(value)
+        )
+    ) as Partial<IFrontmatter> // Note: this only works because frontmatter has only strings and arrays; if an object were added, this would break
+    frontmatter = { ...currentFrontmatter, ...argFrontmatter } as IFrontmatter
 
     if (args.interactive) {
         await solicitNoteMetadata({ config, options: frontmatter })
