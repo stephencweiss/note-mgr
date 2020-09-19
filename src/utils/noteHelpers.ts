@@ -45,8 +45,8 @@ export function parseArgs(args: any): IFrontmatter {
     options["title"] = title
     options["slug"] = slug
     options["stage"] = stage || DocumentStages.Draft
-    options["date"] = (isValidDt(date) && formatDt(date)) || TODAY
-    options["publish"] = (isValidDt(publish) && formatDt(publish)) || TODAY
+    options["date"] = isValidDt(date) ? date : TODAY
+    options["publish"] = isValidDt(publish) ? publish : TODAY
     options["private"] = privateKey || false
     options["category"] = category
     options["tags"] = tags
