@@ -4,7 +4,7 @@ import { Command } from "commander"
 import {
     Config,
     Content,
-    Frontmatter,
+    IFrontmatter,
     Notes,
     generateFrontmatter,
     parseArgs,
@@ -37,7 +37,7 @@ export async function newNote(args: Command) {
     new Content().addNote(options)
 }
 
-async function createFile(options: Frontmatter) {
+async function createFile(options: IFrontmatter) {
     const notes = new Notes()
     const filePath = notes.generateFilePath(options)
 

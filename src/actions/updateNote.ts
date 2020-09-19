@@ -9,7 +9,7 @@ import {
     generateFrontmatter,
     Notes,
     saveNoteToDisk,
-    Frontmatter,
+    IFrontmatter,
 } from "../utils"
 import { solicitNoteMetadata } from "."
 
@@ -28,7 +28,7 @@ export async function updateNote(args: Command) {
 
     const note = notes.read(filePath)
     const body = note.content
-    const currentFrontmatter = note.data as Frontmatter
+    const currentFrontmatter = note.data as IFrontmatter
 
     if (currentFrontmatter.publish && !currentFrontmatter.stage) {
         currentFrontmatter.stage = DocumentStages.Published

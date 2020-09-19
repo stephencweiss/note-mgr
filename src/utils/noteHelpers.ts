@@ -4,12 +4,12 @@ import kebabCase from "lodash.kebabcase"
 import {
     DocumentStages,
     FrontmatterKeys,
-    Frontmatter,
+    IFrontmatter,
     isValidDt,
     formatDt,
 } from "."
 
-export function generateFrontmatter(options: Frontmatter) {
+export function generateFrontmatter(options: IFrontmatter) {
     let frontmatter = ""
     for (let [key, val] of Object.entries(options)) {
         if (key === "private") {
@@ -31,7 +31,7 @@ export function generateFrontmatter(options: Frontmatter) {
  * @param args
  * @param config
  */
-export function parseArgs(args: any): Frontmatter {
+export function parseArgs(args: any): IFrontmatter {
     const TODAY = dayjs().format("YYYY-MM-DD")
     const {
         category,
@@ -44,17 +44,16 @@ export function parseArgs(args: any): Frontmatter {
     } = args
     const slug = kebabCase(args.slug) || kebabCase(title)
 
-    let options = {} as Frontmatter
+    let options = {} as IFrontmatter
 
-    options[FrontmatterKeys.title] = title
-    options[FrontmatterKeys.slug] = slug
-    options[FrontmatterKeys.stage] = stage || DocumentStages.Draft
-    options[FrontmatterKeys.date] = (isValidDt(date) && formatDt(date)) || TODAY
-    options[FrontmatterKeys.publish] =
-        (isValidDt(publish) && formatDt(publish)) || TODAY
-    options[FrontmatterKeys.private] = privateKey || false
-    options[FrontmatterKeys.category] = category
-    options[FrontmatterKeys.tags] = tags
+    options["title"] = title
+    options["slug"] = slug
+    options["stage"] = stage || DocumentStages.Draft
+    options["date"] = (isValidDt(date) && formatDt(date)) || TODAY
+    options["publish"] = (isValidDt(publish) && formatDt(publish)) || TODAY
+    options["private"] = privateKey || false
+    options["category"] = category
+    options["tags"] = tags
 
     return options
 }

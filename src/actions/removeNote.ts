@@ -26,11 +26,7 @@ export async function removeNote() {
         await notes.remove(filePath)
         content.removeRow(contentTitle)
 
-        console.log(
-            `Successfully deleted the note ${
-                frontmatter[FrontmatterKeys.title]
-            }`
-        )
+        console.log(`Successfully deleted the note ${frontmatter["title"]}`)
     } catch (e) {
         console.log(`Failed to delete the note\n${e}`)
     }

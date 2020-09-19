@@ -4,7 +4,7 @@ import path from "path"
 import { prompt } from "inquirer"
 import matter from "gray-matter"
 import { Config, ConfigurationKeys } from "."
-import { Frontmatter, FrontmatterKeys } from "./contentHelpers"
+import { IFrontmatter, FrontmatterKeys } from "./contentHelpers"
 
 export class Notes extends Config {
     config: Map<ConfigurationKeys, string>
@@ -17,11 +17,11 @@ export class Notes extends Config {
      * Generate a full file path from $HOME
      * @param options
      */
-    generateFilePath(options: Frontmatter): string {
+    generateFilePath(options: IFrontmatter): string {
         const configSettings = this.readConfig()
-        return `${this.nomRootPath}/${
-            options[FrontmatterKeys.slug]
-        }.${configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)}`
+        return `${this.nomRootPath}/${options["slug"]}.${configSettings.get(
+            ConfigurationKeys.DEFAULT_FILE_EXTENSION
+        )}`
     }
 
     /**
@@ -44,14 +44,12 @@ export class Notes extends Config {
      * Generate the [title](slug) combination for use in the `.contents` file
      * @param options
      */
-    generateRowTitle(options: Frontmatter, filePath?: string) {
-        if (!options[FrontmatterKeys.title]) {
+    generateRowTitle(options: IFrontmatter, filePath?: string) {
+        if (!options["title"]) {
             throw new Error(`No Title in Frontmatter ${options}`)
         }
-        return `[${options[FrontmatterKeys.title]}](${
-            filePath
-                ? this.getRelativeFilePath(filePath)
-                : options[FrontmatterKeys.slug]
+        return `[${options["title"]}](${
+            filePath ? this.getRelativeFilePath(filePath) : options["slug"]
         })`
     }
 
@@ -134,7 +132,7 @@ export class Notes extends Config {
         try {
             return {
                 ...this.read(filePath).data,
-            } as Frontmatter
+            } as IFrontmatter
         } catch (error) {
             throw new Error(
                 `Failed to read frontmatter for file at ${filePath}\n${error}`
@@ -146,13 +144,13 @@ export class Notes extends Config {
      * Get the frontmatter for all notes managed by Nom,
      * Notes where there is only a key are filtered out (e.g., `.contents` which has no frontmatter).
      */
-    async allNotesFrontmatter(): Promise<Frontmatter[]> {
+    async allNotesFrontmatter(): Promise<IFrontmatter[]> {
         try {
             return (await this.list())
                 .map((file) => this.getFrontmatter(file))
                 .filter(
                     (note) => note && Object.keys(note).length > 1
-                ) as Frontmatter[]
+                ) as IFrontmatter[]
         } catch (error) {
             throw new Error("Failed to get frontmatter\n${error}")
         }

@@ -1,7 +1,7 @@
 import chalk from "chalk"
 import dayjs from "dayjs"
 import { Notes } from "./notes"
-import { Frontmatter } from "./contentHelpers"
+import { IFrontmatter } from "./contentHelpers"
 
 export enum Published {
     First = "FIRST",
@@ -21,11 +21,11 @@ export class NoteDates extends Notes {
 
             let published = notes.filter(
                 (note) => note && note.publish
-            ) as Frontmatter[]
+            ) as IFrontmatter[]
 
             if (this.style === Published.Recent) {
                 const TODAY = dayjs()
-                published = published.filter((note: Frontmatter) =>
+                published = published.filter((note: IFrontmatter) =>
                     TODAY.isAfter(note.publish)
                 )
             }
@@ -46,10 +46,10 @@ export class NoteDates extends Notes {
 
     private pickSort(style: Published) {
         if (style === Published.First) {
-            return (a: Frontmatter, b: Frontmatter) =>
+            return (a: IFrontmatter, b: IFrontmatter) =>
                 dayjs(a.publish).isAfter(dayjs(b.publish)) ? -1 : 1
         } else {
-            return (a: Frontmatter, b: Frontmatter) =>
+            return (a: IFrontmatter, b: IFrontmatter) =>
                 dayjs(b.publish).isAfter(dayjs(a.publish)) ? -1 : 1
         }
     }

@@ -20,23 +20,12 @@ export type ContentHeaders =
     | "title"
 
 type ContentRow = Pick<
-    Frontmatter,
+    IFrontmatter,
     "date" | "private" | "publish" | "slug" | "stage" | "title"
 >
 type RowMap = Map<keyof ContentRow, any>
 
-export enum FrontmatterKeys {
-    category = "category",
-    date = "date",
-    private = "private",
-    publish = "publish",
-    slug = "slug",
-    stage = "stage",
-    tags = "tags",
-    title = "title",
-}
-
-export interface Frontmatter {
+export interface IFrontmatter {
     category: string[]
     date: string
     private: boolean
@@ -47,8 +36,23 @@ export interface Frontmatter {
     title: string
 }
 
+export type FrontmatterKeys = keyof IFrontmatter
+
+export function generateFrontmatterObj(args: IFrontmatter & any) {
+    return {
+        category: args["category"],
+        date: args["date"],
+        private: args["private"],
+        publish: args["publish"],
+        slug: args["slug"],
+        stage: args["stage"],
+        tags: args["tags"],
+        title: args["title"],
+    } as IFrontmatter
+}
+
 interface IUpdateNote {
-    frontmatter: Frontmatter
+    frontmatter: IFrontmatter
     dupeCheck?: boolean
     filePath?: string
 }
@@ -103,7 +107,7 @@ export class Content extends Config {
         return { headers, divider, body }
     }
 
-    async addNote(frontmatter: Frontmatter) {
+    async addNote(frontmatter: IFrontmatter) {
         this.updateNote({ frontmatter, dupeCheck: true })
     }
 
@@ -163,16 +167,16 @@ export class Content extends Config {
     }
 
     private convertFrontmatterToRow(
-        noteFrontmatter: Frontmatter,
+        noteFrontmatter: IFrontmatter,
         filePath?: string
     ) {
         const notes = new Notes()
         const row = new Map() as RowMap
         row.set("title", notes.generateRowTitle(noteFrontmatter, filePath))
-        row.set("private", noteFrontmatter[FrontmatterKeys.private])
-        row.set("publish", noteFrontmatter[FrontmatterKeys.publish])
-        row.set("date", noteFrontmatter[FrontmatterKeys.date])
-        row.set("stage", noteFrontmatter[FrontmatterKeys.stage])
+        row.set("private", noteFrontmatter["private"])
+        row.set("publish", noteFrontmatter["publish"])
+        row.set("date", noteFrontmatter["date"])
+        row.set("stage", noteFrontmatter["stage"])
         return row
     }
 
