@@ -4,7 +4,7 @@ import path from "path"
 import { prompt } from "inquirer"
 import matter from "gray-matter"
 import { Config, ConfigurationKeys } from "."
-import { IFrontmatter, FrontmatterKeys } from "./contentHelpers"
+import { IFrontmatter } from "./contentHelpers"
 
 export class Notes extends Config {
     config: Map<ConfigurationKeys, string>

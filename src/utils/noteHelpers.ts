@@ -1,19 +1,15 @@
 import fs from "fs"
 import dayjs from "dayjs"
 import kebabCase from "lodash.kebabcase"
-import {
-    DocumentStages,
-    FrontmatterKeys,
-    IFrontmatter,
-    isValidDt,
-    formatDt,
-} from "."
+import { DocumentStages, IFrontmatter, isValidDt, formatDt } from "."
 
 export function generateFrontmatter(options: IFrontmatter) {
     let frontmatter = ""
     for (let [key, val] of Object.entries(options)) {
         if (key === "private") {
             frontmatter += `private: ${val}` // special handling due to Private being a restricted word in JS
+        } else if (key === "date" || key === "publish") {
+            frontmatter += `${key}: ${formatDt(val)}`
         } else if (typeof val === "string") {
             frontmatter += `${key}: "${val}"`
         } else if (Array.isArray(val)) {
