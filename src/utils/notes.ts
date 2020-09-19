@@ -1,6 +1,7 @@
 // Helpers related to working with notes
 import fs from "fs"
 import path from "path"
+import { generateErrorMessage, printError } from "./errorMessages"
 import { prompt } from "inquirer"
 import matter from "gray-matter"
 import { Config, ConfigurationKeys } from "."
@@ -18,10 +19,23 @@ export class Notes extends Config {
      * @param options
      */
     generateFilePath(options: IFrontmatter): string {
-        const configSettings = this.readConfig()
-        return `${this.nomRootPath}/${options["slug"]}.${configSettings.get(
-            ConfigurationKeys.DEFAULT_FILE_EXTENSION
-        )}`
+        try {
+            const configSettings = this.readConfig()
+            return `${this.nomRootPath}/${options["slug"]}.${configSettings.get(
+                ConfigurationKeys.DEFAULT_FILE_EXTENSION
+            )}`
+        } catch (error) {
+            throw new Error(
+                generateErrorMessage(
+                    error,
+                    `Failed to generate filepath given options:\n${JSON.stringify(
+                        options,
+                        null,
+                        4
+                    )}`
+                )
+            )
+        }
     }
 
     /**
@@ -31,13 +45,24 @@ export class Notes extends Config {
      *
      */
     getRelativeFilePath(filePath: string) {
-        const directoryPath = `${this.nomRootPath}/`
-        const fileExtension = new RegExp(
-            `.${this.readConfig().get(
-                ConfigurationKeys.DEFAULT_FILE_EXTENSION
-            )}$`
-        )
-        return filePath.replace(directoryPath, "").replace(fileExtension, "")
+        try {
+            const directoryPath = `${this.nomRootPath}/`
+            const fileExtension = new RegExp(
+                `.${this.readConfig().get(
+                    ConfigurationKeys.DEFAULT_FILE_EXTENSION
+                )}$`
+            )
+            return filePath
+                .replace(directoryPath, "")
+                .replace(fileExtension, "")
+        } catch (error) {
+            throw new Error(
+                generateErrorMessage(
+                    error,
+                    `Failed to get relative filepath @ ${filePath}`
+                )
+            )
+        }
     }
 
     /**
@@ -45,58 +70,85 @@ export class Notes extends Config {
      * @param options
      */
     generateRowTitle(options: IFrontmatter, filePath?: string) {
-        if (!options["title"]) {
-            throw new Error(`No Title in Frontmatter ${options}`)
+        try {
+            if (!options["title"]) {
+                throw new Error(`No Title in Frontmatter ${options}`)
+            }
+            return `[${options["title"]}](${
+                filePath ? this.getRelativeFilePath(filePath) : options["slug"]
+            })`
+        } catch (error) {
+            throw new Error(
+                generateErrorMessage(
+                    error,
+                    `Failed to get generate rowTitle given options and filepath\noptions:${JSON.stringify(
+                        options,
+                        null,
+                        4
+                    )}\nfilepath: ${filePath}`
+                )
+            )
         }
-        return `[${options["title"]}](${
-            filePath ? this.getRelativeFilePath(filePath) : options["slug"]
-        })`
     }
 
     /**
      * Find a single note interactively
      */
     async find() {
-        const rootDir = this.config.get(ConfigurationKeys.NOTES_ROOT_DIR)
-        const questions = [
-            {
-                type: "fuzzypath",
-                name: "filePath",
-                excludePath: (nodePath: string) =>
-                    nodePath.startsWith("node_modules"),
-                excludeFilter: (nodePath: string) =>
-                    nodePath.startsWith(`${rootDir}/.`),
-                itemType: "file",
-                rootPath: rootDir,
-                message:
-                    "Select the note you'd like to update (excludes .dotfiles):",
-                default: "",
-                suggestOnly: false,
-                depthLimit: 0,
-            },
-        ]
+        try {
+            const rootDir = this.config.get(ConfigurationKeys.NOTES_ROOT_DIR)
+            const questions = [
+                {
+                    type: "fuzzypath",
+                    name: "filePath",
+                    excludePath: (nodePath: string) =>
+                        nodePath.startsWith("node_modules"),
+                    excludeFilter: (nodePath: string) =>
+                        nodePath.startsWith(`${rootDir}/.`),
+                    itemType: "file",
+                    rootPath: rootDir,
+                    message:
+                        "Select the note you'd like to update (excludes .dotfiles):",
+                    default: "",
+                    suggestOnly: false,
+                    depthLimit: 0,
+                },
+            ]
 
-        return await prompt(questions).then(
-            (answers) => answers && (answers.filePath as string)
-        )
+            return await prompt(questions).then(
+                (answers) => answers && (answers.filePath as string)
+            )
+        } catch (error) {
+            throw new Error(
+                generateErrorMessage(error, `Failed to find the file`)
+            )
+        }
     }
 
     /**
      * List all notes that are managed by Nom
      */
     list() {
-        const rootDir = this.readConfig().get(ConfigurationKeys.NOTES_ROOT_DIR)
-        if (!rootDir) {
-            throw new Error("Missing root directory. Have you run init?")
+        try {
+            const rootDir = this.readConfig().get(
+                ConfigurationKeys.NOTES_ROOT_DIR
+            )
+            if (!rootDir) {
+                throw new Error("Missing root directory. Have you run init?")
+            }
+            return fs.promises
+                .readdir(path.resolve(rootDir), { encoding: "utf8" })
+                .then((files) => {
+                    return files.map((file) => `${rootDir}/${file}`)
+                })
+                .catch((error) => {
+                    throw new Error(`Failed to read ${rootDir}\n\t${error}`)
+                })
+        } catch (error) {
+            throw new Error(
+                generateErrorMessage(error, `Failed to list notes\n${error}`)
+            )
         }
-        return fs.promises
-            .readdir(path.resolve(rootDir), { encoding: "utf8" })
-            .then((files) => {
-                return files.map((file) => `${rootDir}/${file}`)
-            })
-            .catch((err) => {
-                throw new Error(`Failed to read ${rootDir}`)
-            })
     }
 
     /**
@@ -105,15 +157,33 @@ export class Notes extends Config {
      * @return {} - An object of Frontmatter & the file path
      */
     read(filePath: string) {
-        return matter.read(filePath)
+        try {
+            return matter.read(filePath)
+        } catch (error) {
+            throw new Error(
+                generateErrorMessage(
+                    error,
+                    `Failed to read file at ${filePath}`
+                )
+            )
+        }
     }
 
     remove(filePath: string) {
         // export function removeNoteFile(filePath: string) {
-        if (!this.testPath(filePath)) {
-            throw new Error(`No file exists at path ${filePath}`)
+        try {
+            if (!this.testPath(filePath)) {
+                throw new Error(`No file exists at path ${filePath}`)
+            }
+            fs.unlinkSync(filePath)
+        } catch (error) {
+            throw new Error(
+                generateErrorMessage(
+                    error,
+                    `Failed to remove file at ${filePath}`
+                )
+            )
         }
-        fs.unlinkSync(filePath)
     }
 
     async testPath(filePath: string) {
@@ -135,7 +205,10 @@ export class Notes extends Config {
             } as IFrontmatter
         } catch (error) {
             throw new Error(
-                `Failed to read frontmatter for file at ${filePath}\n${error}`
+                generateErrorMessage(
+                    error,
+                    `Failed to read frontmatter for file at ${filePath}`
+                )
             )
         }
     }
@@ -152,7 +225,12 @@ export class Notes extends Config {
                     (note) => note && Object.keys(note).length > 1
                 ) as IFrontmatter[]
         } catch (error) {
-            throw new Error("Failed to get frontmatter\n${error}")
+            throw new Error(
+                generateErrorMessage(
+                    error,
+                    `Failed to get all Notes frontmatter`
+                )
+            )
         }
     }
 }

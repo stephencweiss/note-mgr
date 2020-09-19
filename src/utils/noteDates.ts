@@ -2,6 +2,8 @@ import chalk from "chalk"
 import dayjs from "dayjs"
 import { Notes } from "./notes"
 import { IFrontmatter } from "./contentHelpers"
+import { isValidDt } from "./dateHelpers"
+import { generateErrorMessage, printError } from "./errorMessages"
 
 export enum Published {
     First = "FIRST",
@@ -40,7 +42,9 @@ export class NoteDates extends Notes {
             )
             console.log(chalk.bold(sorted[sorted.length - 1].publish))
         } catch (error) {
-            throw new Error("Failed to calculate dates\n${error}")
+            throw new Error(
+                generateErrorMessage(error, `Failed to calculate dates`)
+            )
         }
     }
 

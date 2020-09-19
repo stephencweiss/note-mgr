@@ -1,6 +1,7 @@
 export * from "./config"
 export * from "./dateHelpers"
 export * from "./contentHelpers"
+export * from "./errorMessages"
 export * from "./noteDates"
 export * from "./noteHelpers"
 export * from "./notes"

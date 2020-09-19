@@ -1,4 +1,4 @@
-import { Content, FrontmatterKeys, Notes } from "../utils"
+import { Content, Notes, printError } from "../utils"
 
 export async function removeNote() {
     try {
@@ -27,7 +27,7 @@ export async function removeNote() {
         content.removeRow(contentTitle)
 
         console.log(`Successfully deleted the note ${frontmatter["title"]}`)
-    } catch (e) {
-        console.log(`Failed to delete the note\n${e}`)
+    } catch (error) {
+        printError(`Failed to delete the note\n\t${error}`)
     }
 }
