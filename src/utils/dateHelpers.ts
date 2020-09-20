@@ -3,7 +3,7 @@ import utc from "dayjs/plugin/utc"
 dayjs.extend(utc)
 
 export function isValidDt(date: string) {
-    return dayjs(date).isValid()
+    return date && dayjs(date).isValid()
 }
 
 export function formatDt(date: string, format?: string) {
