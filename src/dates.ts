@@ -2,11 +2,15 @@ import { prompt } from "inquirer"
 import { Command } from "commander"
 import { generateErrorMessage, NoteDates, printError, Published } from "./utils"
 
-export async function dates(args: Command) {
+export async function dates(args: Command, noteCount?: string) {
     try {
         const style = await findStyle(args)
-        const noteDates = await new NoteDates(style)
-        await noteDates.published()
+        const noteDates = await new NoteDates({
+            style,
+            multipleDates: args && args.multipleDates,
+            noteCount: Number(noteCount) ?? 1,
+        })
+        await noteDates.printByStyle()
     } catch (error) {
         printError(
             generateErrorMessage(
@@ -24,18 +28,21 @@ export async function dates(args: Command) {
 async function findStyle(args: Command) {
     try {
         let style: Published = Published.Latest
-        const { latest, first, recent } = args
-        if (!latest && !first && !recent && args.select) {
-            style = await solicitTarget()
-        }
-        if (first) {
-            style = Published.First
-        }
-        if (recent) {
-            style = Published.Recent
+        if (args) {
+            const { latest, first, recent } = args
+            if (!latest && !first && !recent && args.select) {
+                style = await solicitTarget()
+            }
+            if (first) {
+                style = Published.First
+            }
+            if (recent) {
+                style = Published.Recent
+            }
         }
         return style
     } catch (error) {
+        printError(error)
         throw new Error(generateErrorMessage(error))
     }
 }
@@ -63,7 +70,5 @@ async function solicitTarget() {
             ],
         },
     ]
-    return await prompt(questions).then((answers) => {
-        return answers.publishStyle as Published
-    })
+    return await prompt(questions).then((answers) => answers)
 }

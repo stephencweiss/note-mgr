@@ -56,16 +56,27 @@ function main() {
         .description("Remove a note")
         .action(removeNote)
     program
-        .command("date")
+        .command("date [noteCount]")
         .alias("d")
-        .option("-f --first", "Return the earliest published note")
-        .option("-l --latest", "(Default) Return the latest published note")
+        .option(
+            "-f --first",
+            "Date style: Return dates sorted in ascending order based on publish date (earliest -> latest)"
+        )
+        .option(
+            "-l --latest",
+            "(Default) Date style: Return dates sorted in descending order based on publish date (latest -> earliest)"
+        )
         .option(
             "-r --recent",
-            "Return the most recent published note in the past"
+            "Date style: Return dates sorted in descending order based on publish date (latest -> earliest). Only shows dates before TODAY"
+        )
+        .option(
+            "-m --multipleDates",
+            "Show all dates for a given style, overrides note count",
+            false
         )
         .description("Interrogate notes by their date fields")
-        .action(dates)
+        .action((count, cmd) => dates(cmd, count))
     program
         .command("count")
         .alias("c")
