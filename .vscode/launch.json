@@ -22,6 +22,12 @@
                 "${workspaceFolder}/build/**/*.js",
                 "!**/node_modules/**"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch current node file",
+            "program": "${file}"
         }
     ]
 }

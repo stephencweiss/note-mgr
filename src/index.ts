@@ -29,10 +29,6 @@ function main() {
         .option("-p --publish <date>", "The frontmatter for publish")
         .option("-s --slug <slug>", "The frontmatter for the slug (kebab-case)")
         .option("-t --title <title>", "The frontmatter for the title")
-        .option(
-            "--custom [key:value...]",
-            "Custom frontmatter - only key:value pairs are supported at this time"
-        )
         .option("--private", "The frontmatter for private", false)
         .option("--tag <tag...>", "The frontmatter for the title")
         .description("Creates a new draft note")
@@ -51,10 +47,6 @@ function main() {
         .option("-s --slug <slug>", "The frontmatter for the slug (kebab-case)")
         .option("--stage <stage>", "The frontmatter for the stage")
         .option("-t --title <title>", "The frontmatter for the title")
-        .option(
-            "--custom [key:value...]",
-            "Custom frontmatter - only key:value pairs are supported at this time"
-        )
         .option("--private", "Make the note private", false)
         .option("--tag <tag...>", "The frontmatter for the tags")
         .action(updateNote)
@@ -64,16 +56,27 @@ function main() {
         .description("Remove a note")
         .action(removeNote)
     program
-        .command("date")
+        .command("date [noteCount]")
         .alias("d")
-        .option("-f --first", "Return the earliest published note")
-        .option("-l --latest", "(Default) Return the latest published note")
+        .option(
+            "-f --first",
+            "Date style: Return dates sorted in ascending order based on publish date (earliest -> latest)"
+        )
+        .option(
+            "-l --latest",
+            "(Default) Date style: Return dates sorted in descending order based on publish date (latest -> earliest)"
+        )
         .option(
             "-r --recent",
-            "Return the most recent published note in the past"
+            "Date style: Return dates sorted in descending order based on publish date (latest -> earliest). Only shows dates before TODAY"
+        )
+        .option(
+            "-m --multipleDates",
+            "Show all dates for a given style, overrides note count",
+            false
         )
         .description("Interrogate notes by their date fields")
-        .action(dates)
+        .action((count, cmd) => dates(cmd, count))
     program
         .command("count")
         .alias("c")

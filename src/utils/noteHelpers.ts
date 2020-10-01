@@ -1,34 +1,15 @@
 import fs from "fs"
 import dayjs from "dayjs"
-import { prompt } from "inquirer"
-import matter from "gray-matter"
 import kebabCase from "lodash.kebabcase"
-import {
-    Config,
-    ConfigurationKeys,
-    DocumentStages,
-    FrontmatterKeys,
-    isValidDt,
-    formatDt,
-} from "."
+import { DocumentStages, IFrontmatter, isValidDt, formatDt } from "."
 
-const fsPromises = fs.promises
-
-export function generateFilePath(
-    config: Config,
-    options: Map<FrontmatterKeys, any>
-): string {
-    const configSettings = config.readConfig()
-    return `${config.nomRootPath}/${options.get(
-        FrontmatterKeys.slug
-    )}.${configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)}`
-}
-
-export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
+export function generateFrontmatter(options: IFrontmatter) {
     let frontmatter = ""
-    for (let [key, val] of options) {
+    for (let [key, val] of Object.entries(options)) {
         if (key === "private") {
             frontmatter += `private: ${val}` // special handling due to Private being a restricted word in JS
+        } else if (key === "date" || key === "publish") {
+            frontmatter += `${key}: ${formatDt(val)}`
         } else if (typeof val === "string") {
             frontmatter += `${key}: "${val}"`
         } else if (Array.isArray(val)) {
@@ -41,23 +22,13 @@ export function generateFrontmatter(options: Map<FrontmatterKeys, any>) {
     return `---\n${frontmatter}---\n`
 }
 
-export function readNote(path: string) {
-    return matter(fs.readFileSync(path, { encoding: "utf8" }))
-}
-
 /**
  * Creates a new options map for the note - the order in which options are updated matters since we're using a Map.
  * @param args
  * @param config
  */
-export function parseOptions(
-    args: any,
-    config: Map<ConfigurationKeys, string>
-): Map<FrontmatterKeys, any> {
-    const defaultDateFormat = config.get(ConfigurationKeys.DEFAULT_DATE_FORMAT)
+export function parseArgs(args: any): IFrontmatter {
     const TODAY = dayjs().format("YYYY-MM-DD")
-    const title = args.title
-    const slug = kebabCase(args.slug) || kebabCase(title)
     const {
         category,
         date,
@@ -65,60 +36,22 @@ export function parseOptions(
         publish,
         stage,
         tags,
-        custom,
+        title,
     } = args
+    const slug = kebabCase(args.slug) || kebabCase(title)
 
-    let cliSetOptions = new Map()
+    let options = {} as IFrontmatter
 
-    updateOptions(cliSetOptions, FrontmatterKeys.title, title)
-    updateOptions(cliSetOptions, FrontmatterKeys.slug, slug || kebabCase(title))
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.stage,
-        stage || DocumentStages.Draft
-    )
+    options["title"] = title
+    options["slug"] = slug
+    options["stage"] = stage || DocumentStages.Draft
+    options["date"] = isValidDt(date) ? date : TODAY
+    options["publish"] = isValidDt(publish) ? publish : TODAY
+    options["private"] = privateKey || false
+    options["category"] = category
+    options["tags"] = tags
 
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.date,
-        (isValidDt(date) && formatDt(date)) || TODAY
-    )
-
-    updateOptions(
-        cliSetOptions,
-        FrontmatterKeys.publish,
-        (isValidDt(publish) && formatDt(publish)) || TODAY
-    )
-
-    updateOptions(cliSetOptions, FrontmatterKeys.private, privateKey || false)
-    updateOptions(cliSetOptions, FrontmatterKeys.category, category)
-    updateOptions(cliSetOptions, FrontmatterKeys.tags, tags)
-    parseCustom(cliSetOptions, custom)
-    return cliSetOptions
-}
-
-export function updateOptions(
-    optionsMap: Map<FrontmatterKeys | any, any>,
-    key: FrontmatterKeys,
-    value?: any
-) {
-    optionsMap.set(key, value)
-}
-
-/**
- * If a custom option is included, parse it and add to the options passed in from the CLI like a regular option to be
- * included in the frontmatter.
- * @param cliSetOptions
- * @param customArgs
- */
-function parseCustom(
-    cliSetOptions: Map<FrontmatterKeys | any, any>,
-    customArgs: string[]
-) {
-    customArgs?.map((el) => {
-        const [key, value] = el.split(":")
-        cliSetOptions.set(key, value)
-    })
+    return options
 }
 
 export function saveNoteToDisk({
@@ -133,41 +66,4 @@ export function saveNoteToDisk({
             throw new Error(`Failed to save note at ${filePath}`)
         }
     })
-}
-
-export async function testPath(notePath: string) {
-    return await fsPromises
-        .access(notePath)
-        .then(() => true)
-        .catch(() => false)
-}
-
-export async function findNote(config: Map<ConfigurationKeys, string>) {
-    const rootDir = config.get(ConfigurationKeys.NOTES_ROOT_DIR)!
-    const questions = [
-        {
-            type: "fuzzypath",
-            name: "filePath",
-            excludePath: (nodePath: string) =>
-                nodePath.startsWith("node_modules"),
-            excludeFilter: (nodePath: string) => nodePath.startsWith("."),
-            itemType: "file",
-            rootPath: rootDir,
-            message: "Select the note you'd like to update:",
-            default: "",
-            suggestOnly: false,
-            depthLimit: 0,
-        },
-    ]
-
-    return await prompt(questions).then(
-        (answers) => answers && (answers.filePath as string)
-    )
-}
-
-export function removeNoteFile(filePath: string) {
-    if (!testPath(filePath)) {
-        throw new Error(`No file exists at path ${filePath}`)
-    }
-    fs.unlinkSync(filePath)
 }

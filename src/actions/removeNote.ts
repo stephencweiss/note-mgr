@@ -1,20 +1,33 @@
-import { findNote, readNote, removeNoteFile } from "../utils/noteHelpers"
-import { Config, Content, FrontmatterKeys } from "../utils"
+import { Content, Notes, printError } from "../utils"
 
 export async function removeNote() {
     try {
-        const config = new Config().readConfig()
         const content = new Content()
-        const notePath = await findNote(config)
-        const note = readNote(notePath)
-        const frontmatter = note.data
-        await removeNoteFile(notePath)
-        content.removeRow(
-            frontmatter.title as FrontmatterKeys.title,
-            frontmatter.slug as FrontmatterKeys.slug
+        const notes = new Notes()
+        const filePath = await notes.find()
+        const relativeFilePath = await notes.getRelativeFilePath(filePath)
+        const frontmatter = notes.getFrontmatter(filePath)
+        const contentTitle = notes.generateRowTitle(
+            frontmatter,
+            relativeFilePath
         )
-        console.log(`Successfully deleted the note ${frontmatter.title}`)
-    } catch (e) {
-        console.log(`Failed to delete the note\n${e}`)
+
+        // Check that both note and .content exists
+        if (!(await notes.testPath(filePath))) {
+            console.log(`fails here`)
+            throw new Error(`Could not find ${filePath}`)
+        }
+
+        if (!content.testRowTitle(contentTitle)) {
+            throw new Error(`Could not find ${filePath} in .contents`)
+        }
+
+        // Remove both note and .content
+        await notes.remove(filePath)
+        content.removeRow(contentTitle)
+
+        console.log(`Successfully deleted the note ${frontmatter["title"]}`)
+    } catch (error) {
+        printError(`Failed to delete the note\n\t${error}`)
     }
 }

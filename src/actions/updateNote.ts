@@ -4,15 +4,13 @@ import inquirer from "inquirer"
 import {
     Config,
     Content,
-    FrontmatterKeys,
     ConfigurationKeys,
     DocumentStages,
     generateFrontmatter,
-    parseOptions,
-    testPath,
-    readNote,
-    findNote,
+    generateFrontmatterObj,
+    Notes,
     saveNoteToDisk,
+    IFrontmatter,
 } from "../utils"
 import { solicitNoteMetadata } from "."
 
@@ -22,36 +20,37 @@ export async function updateNote(args: Command) {
     const config = new Config().readConfig()
     const rootDir = config.get(ConfigurationKeys.NOTES_ROOT_DIR)!
     const fileExt = config.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)!
-    let notePath = path.resolve(rootDir, `${args.slug}.${fileExt}`)
+    let filePath = path.resolve(rootDir, `${args.slug}.${fileExt}`)
     let frontmatter
-
-    if (!(await testPath(notePath))) {
-        notePath = await findNote(config)
-        // delete args.args // remove args since it was inaccurate
+    const notes = new Notes()
+    if (!(await notes.testPath(filePath))) {
+        filePath = await notes.find()
     }
 
-    const note = readNote(notePath)
+    const note = notes.read(filePath)
     const body = note.content
-    const currentFrontmatter = note.data
+    const currentFrontmatter = note.data as IFrontmatter
 
     if (currentFrontmatter.publish && !currentFrontmatter.stage) {
         currentFrontmatter.stage = DocumentStages.Published
     }
 
-    frontmatter = parseOptions(
-        { ...currentFrontmatter, ...args },
-        config
-    ) as Map<FrontmatterKeys, any>
+    let argFrontmatter = Object.fromEntries(
+        Object.entries(generateFrontmatterObj(args)).filter(([_, value]) =>
+            Array.isArray(value) ? value.length : Boolean(value)
+        )
+    ) as Partial<IFrontmatter> // Note: this only works because frontmatter has only strings and arrays; if an object were added, this would break
+    frontmatter = { ...currentFrontmatter, ...argFrontmatter } as IFrontmatter
 
     if (args.interactive) {
         await solicitNoteMetadata({ config, options: frontmatter })
     }
 
     saveNoteToDisk({
-        filePath: notePath,
+        filePath: filePath,
         body: `${generateFrontmatter(frontmatter)}${body}`,
     })
 
     const content = new Content()
-    content.updateNote({ frontmatter })
+    content.updateNote({ frontmatter, filePath })
 }

@@ -1,26 +1,50 @@
 import { prompt } from "inquirer"
 import { Command } from "commander"
-import { NoteDates, Published } from "./utils"
+import { generateErrorMessage, NoteDates, printError, Published } from "./utils"
 
-export async function dates(args: Command) {
-    const style = await findStyle(args)
-    const noteDates = await new NoteDates(style)
-    noteDates.published()
+export async function dates(args: Command, noteCount?: string) {
+    try {
+        const style = await findStyle(args)
+        const noteDates = await new NoteDates({
+            style,
+            multipleDates: args && args.multipleDates,
+            noteCount: Number(noteCount) ?? 1,
+        })
+        await noteDates.printByStyle()
+    } catch (error) {
+        printError(
+            generateErrorMessage(
+                error,
+                `Failed to calculate the date for ${JSON.stringify(
+                    await findStyle(args),
+                    null,
+                    4
+                )}`
+            )
+        )
+    }
 }
 
 async function findStyle(args: Command) {
-    let style: Published = Published.Latest
-    const { latest, first, recent } = args
-    if (!latest && !first && !recent && args.select) {
-        style = await solicitTarget()
+    try {
+        let style: Published = Published.Latest
+        if (args) {
+            const { latest, first, recent } = args
+            if (!latest && !first && !recent && args.select) {
+                style = await solicitTarget()
+            }
+            if (first) {
+                style = Published.First
+            }
+            if (recent) {
+                style = Published.Recent
+            }
+        }
+        return style
+    } catch (error) {
+        printError(error)
+        throw new Error(generateErrorMessage(error))
     }
-    if (first) {
-        style = Published.First
-    }
-    if (recent) {
-        style = Published.Recent
-    }
-    return style
 }
 
 async function solicitTarget() {
@@ -46,7 +70,5 @@ async function solicitTarget() {
             ],
         },
     ]
-    return await prompt(questions).then((answers) => {
-        return answers.publishStyle as Published
-    })
+    return await prompt(questions).then((answers) => answers)
 }

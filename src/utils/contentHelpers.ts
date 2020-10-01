@@ -2,6 +2,7 @@ import chalk from "chalk"
 import fs from "fs"
 import path from "path"
 import { Config, ConfigurationKeys } from "."
+import { Notes } from "./notes"
 
 export enum DocumentStages {
     Draft = "draft",
@@ -19,23 +20,12 @@ export type ContentHeaders =
     | "title"
 
 type ContentRow = Pick<
-    Frontmatter,
+    IFrontmatter,
     "date" | "private" | "publish" | "slug" | "stage" | "title"
 >
 type RowMap = Map<keyof ContentRow, any>
 
-export enum FrontmatterKeys {
-    category = "category",
-    date = "date",
-    private = "private",
-    publish = "publish",
-    slug = "slug",
-    stage = "stage",
-    tags = "tags",
-    title = "title",
-}
-
-export interface Frontmatter {
+export interface IFrontmatter {
     category: string[]
     date: string
     private: boolean
@@ -46,14 +36,25 @@ export interface Frontmatter {
     title: string
 }
 
-interface IFindNote {
-    key: string
-    body: Map<string, RowMap>
+export type FrontmatterKeys = keyof IFrontmatter
+
+export function generateFrontmatterObj(args: IFrontmatter & any) {
+    return {
+        category: args["category"],
+        date: args["date"],
+        private: args["private"],
+        publish: args["publish"],
+        slug: args["slug"],
+        stage: args["stage"],
+        tags: args["tags"],
+        title: args["title"],
+    } as IFrontmatter
 }
 
 interface IUpdateNote {
-    frontmatter: Map<FrontmatterKeys, any>
+    frontmatter: IFrontmatter
     dupeCheck?: boolean
+    filePath?: string
 }
 
 /**
@@ -106,13 +107,13 @@ export class Content extends Config {
         return { headers, divider, body }
     }
 
-    async addNote(frontmatter: Map<FrontmatterKeys, any>) {
+    async addNote(frontmatter: IFrontmatter) {
         this.updateNote({ frontmatter, dupeCheck: true })
     }
 
-    async updateNote({ frontmatter, dupeCheck }: IUpdateNote) {
+    async updateNote({ frontmatter, dupeCheck, filePath }: IUpdateNote) {
         const { headers, divider, body } = this.readContent()
-        const row = this.convertFrontmatterToRow(frontmatter)
+        const row = this.convertFrontmatterToRow(frontmatter, filePath)
 
         if (dupeCheck && body.has(row.get("title"))) {
             throw new Error(
@@ -165,47 +166,33 @@ export class Content extends Config {
             .map((el) => el.trim())
     }
 
-    private getRowTitle(
-        title: FrontmatterKeys.title,
-        slug: FrontmatterKeys.slug
-    ) {
-        return `[${title}](${slug})`
-    }
-
     private convertFrontmatterToRow(
-        noteFrontmatter: Map<FrontmatterKeys, any>
+        noteFrontmatter: IFrontmatter,
+        filePath?: string
     ) {
+        const notes = new Notes()
         const row = new Map() as RowMap
-        row.set(
-            "title",
-            this.getRowTitle(
-                noteFrontmatter.get(FrontmatterKeys.title),
-                noteFrontmatter.get(FrontmatterKeys.slug)
-            )
-        )
-        row.set("private", noteFrontmatter.get(FrontmatterKeys.private))
-        row.set("publish", noteFrontmatter.get(FrontmatterKeys.publish))
-        row.set("date", noteFrontmatter.get(FrontmatterKeys.date))
-        row.set("stage", noteFrontmatter.get(FrontmatterKeys.stage))
+        row.set("title", notes.generateRowTitle(noteFrontmatter, filePath))
+        row.set("private", noteFrontmatter["private"])
+        row.set("publish", noteFrontmatter["publish"])
+        row.set("date", noteFrontmatter["date"])
+        row.set("stage", noteFrontmatter["stage"])
         return row
     }
 
-    removeRow(title: FrontmatterKeys.title, slug: FrontmatterKeys.slug) {
-        const key = this.getRowTitle(title, slug)
+    removeRow(rowTitle: string) {
         const { headers, divider, body } = this.readContent()
-        if (!this.findRow({ key, body })) {
-            console.log(`No note exists with the key ${key}`)
-            throw new Error(`No note exists with the key ${key}`)
+        if (!this.testRowTitle(rowTitle)) {
+            console.log(`No note exists with the rowTitle ${rowTitle}`)
+            throw new Error(`No note exists with the rowTitle ${rowTitle}`)
         }
-        body.delete(key)
+        body.delete(rowTitle)
         this.updateContent(this.prepareContent(headers, divider, body))
     }
 
-    private findRow({ key, body }: IFindNote) {
-        if (!body.has(key)) {
-            return false
-        }
-        return true
+    testRowTitle(rowTitle: string) {
+        const { body } = this.readContent()
+        return body.has(rowTitle)
     }
 
     private updateContent(body: string) {
