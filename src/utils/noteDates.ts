@@ -1,7 +1,7 @@
 import chalk from "chalk"
 import dayjs from "dayjs"
 import { Notes } from "./notes"
-import { IFrontmatter } from "./contentHelpers"
+import { DocumentStages, IFrontmatter } from "./contentHelpers"
 import { formatDt, isValidDt } from "./dateHelpers"
 import { generateErrorMessage } from "./errorMessages"
 
@@ -62,6 +62,7 @@ export class NoteDates extends Notes {
                 : await this.allNotesFrontmatter()
             this.printList = notes
                 .filter(this.filterBadDates)
+                .filter(this.filterUnpublishedNotes)
                 .filter(this.filterRecent.bind(this))
                 .sort(sortFn)
                 .map((note) => {
@@ -106,8 +107,12 @@ export class NoteDates extends Notes {
             : true
     }
 
-    private filterBadDates(frontmatter: IFrontmatter) {
-        return isValidDt(frontmatter.publish)
+    private filterBadDates(note: IFrontmatter) {
+        return isValidDt(note.publish)
+    }
+
+    private filterUnpublishedNotes(note: IFrontmatter) {
+        return note.stage === DocumentStages.Published
     }
 
     private pickSort(style: Published) {
