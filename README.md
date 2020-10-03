@@ -30,12 +30,15 @@ Before using `nom`, it must be initialized with `nom init`
 
 ## Usage
 
--   `-i --init` initialize `nom`
--   `-n --new` will create a new note and add it to the `.contents` list
--   `-u --update` will update the frontmatter for the selected note
--   `-r --remove` will prompt for a note to remove
--   `-d --date` will interrogate the notes to understand dates of the notes (e.g., publish date)
--   `-c --count` will count the notes based on flags provided
+The following commands (alias) are available within `nom`:
+
+-   `init` (`i`) initialize `nom`
+-   `new` (`n`) will create a new note and add it to the `.contents` list
+-   `update` (`u`) will update the frontmatter for the selected note
+-   `remove` (`r`) will prompt for a note to remove
+-   `date` (`d`) will interrogate the notes to understand dates of the notes (e.g., publish date)
+-   `count` (`c`) will count the notes based on flags provided
+-   `clean` will clean up the directory and `.contents` file
 
 ### Initialization Options
 
@@ -84,6 +87,8 @@ All options are available for setting declaratively with the following options:
     ```shell
     $ nom new --title "the note's title"
     ```
+
+    **Note** Title's should not include brackets (`[]`). Doing so is unsupported.
 
 -   "--private", "Mark the note private"
 
