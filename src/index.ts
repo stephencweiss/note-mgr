@@ -6,6 +6,7 @@ import { init } from "./init"
 import { dates } from "./dates"
 import { counters } from "./counts"
 import { newNote, removeNote, updateNote } from "./actions"
+import { cleanNotes } from "./actions/cleanNotes"
 
 function main() {
     const program = new Command()
@@ -91,6 +92,7 @@ function main() {
         .option("-np --no-private", "Only consider notes that are not private") //TODO: Need to implement per https://github.com/stephencweiss/note-mgr/issues/23
         .option("-t --tags", "Return the count of notes based on stage")
         .action(counters)
+    program.command("clean").action(cleanNotes)
 
     program.parse(process.argv)
 }

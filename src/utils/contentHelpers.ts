@@ -1,7 +1,7 @@
 import chalk from "chalk"
 import fs from "fs"
 import path from "path"
-import { Config, ConfigurationKeys } from "."
+import { Config, ConfigurationKeys, parseLink } from "."
 import { Notes } from "./notes"
 
 export enum DocumentStages {
@@ -100,6 +100,9 @@ export class Content extends Config {
                     acc.set(headers[i], cur)
                     return acc
                 }, new Map())
+                const { title, slug } = this.parseTitle(curLine[0])
+                frontmatter.set("title", title)
+                frontmatter.set("slug", slug)
                 acc.set(curLine[0], frontmatter)
                 return acc
             }, new Map() as Map<string, RowMap>)
@@ -107,11 +110,30 @@ export class Content extends Config {
         return { headers, divider, body }
     }
 
-    async addNote(frontmatter: IFrontmatter) {
+    private parseTitle(rowTitle: string) {
+        const returnVal = parseLink(rowTitle)
+        const [_, title, slug] = returnVal
+        return { title, slug }
+    }
+
+    addNote(frontmatter: IFrontmatter) {
         this.updateNote({ frontmatter, dupeCheck: true })
     }
 
-    async updateNote({ frontmatter, dupeCheck, filePath }: IUpdateNote) {
+    addNotes(
+        notesFrontmatter: IFrontmatter[],
+        headers: ContentHeaders[],
+        divider: string[],
+        body: Map<string, RowMap>
+    ) {
+        const rows = notesFrontmatter.map((frontmatter) =>
+            this.convertFrontmatterToRow(frontmatter)
+        )
+        rows.forEach((row) => body.set(row.get("title"), row))
+        this.updateContent(this.prepareContent(headers, divider, body))
+    }
+
+    updateNote({ frontmatter, dupeCheck, filePath }: IUpdateNote) {
         const { headers, divider, body } = this.readContent()
         const row = this.convertFrontmatterToRow(frontmatter, filePath)
 
