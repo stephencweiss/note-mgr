@@ -145,6 +145,11 @@ export class Notes extends Config {
                 .then((files) => files.map((file) => `${rootDir}/${file.name}`))
                 .then((files) =>
                     files.filter(
+                        (file: string) => !file.startsWith(`${rootDir}/.`)
+                    )
+                )
+                .then((files) =>
+                    files.filter(
                         (file) =>
                             path.extname(file) ===
                             `.${this.defaultFileExtension}`
