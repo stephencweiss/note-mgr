@@ -214,9 +214,12 @@ export class Notes extends Config {
      */
     getFrontmatter(filePath: string) {
         try {
-            const frontmatter = this.read(filePath).data as IFrontmatter
-            frontmatter.slug =
-                frontmatter.slug || this.getRelativeFilePath(filePath)
+            const path = this.getRelativeFilePath(filePath)
+            const frontmatter = this.read(filePath).data as IFrontmatter & {
+                filePath: string
+            }
+            frontmatter.slug = frontmatter.slug || path
+            frontmatter.filePath = path
             return frontmatter
         } catch (error) {
             throw new Error(
@@ -232,13 +235,13 @@ export class Notes extends Config {
      * Get the frontmatter for all notes managed by Nom,
      * Notes where there is only a key are filtered out (e.g., `.contents` which has no frontmatter).
      */
-    async allNotesFrontmatter(): Promise<IFrontmatter[]> {
+    async allNotesFrontmatter(): Promise<
+        Array<IFrontmatter & { filePath: string }>
+    > {
         try {
             return (await this.list())
                 .map((file) => this.getFrontmatter(file))
-                .filter(
-                    (note) => note && Object.keys(note).length > 1
-                ) as IFrontmatter[]
+                .filter((note) => note && Object.keys(note).length > 1)
         } catch (error) {
             throw new Error(
                 generateErrorMessage(
