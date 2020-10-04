@@ -214,9 +214,10 @@ export class Notes extends Config {
      */
     getFrontmatter(filePath: string) {
         try {
-            return {
-                ...this.read(filePath).data,
-            } as IFrontmatter
+            const frontmatter = this.read(filePath).data as IFrontmatter
+            frontmatter.slug =
+                frontmatter.slug || this.getRelativeFilePath(filePath)
+            return frontmatter
         } catch (error) {
             throw new Error(
                 generateErrorMessage(
