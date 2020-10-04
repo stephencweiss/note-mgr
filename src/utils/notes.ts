@@ -16,20 +16,20 @@ export class Notes extends Config {
 
     /**
      * Generate a full file path from $HOME
-     * @param options
+     * @param frontmatter
      */
-    generateFilePath(options: IFrontmatter): string {
+    generateFilePath(frontmatter: IFrontmatter): string {
         try {
             const configSettings = this.readConfig()
-            return `${this.nomRootPath}/${options["slug"]}.${configSettings.get(
-                ConfigurationKeys.DEFAULT_FILE_EXTENSION
-            )}`
+            return `${this.nomRootPath}/${
+                frontmatter["slug"]
+            }.${configSettings.get(ConfigurationKeys.DEFAULT_FILE_EXTENSION)}`
         } catch (error) {
             throw new Error(
                 generateErrorMessage(
                     error,
-                    `Failed to generate filepath given options:\n${JSON.stringify(
-                        options,
+                    `Failed to generate filepath given frontmatter:\n${JSON.stringify(
+                        frontmatter,
                         null,
                         4
                     )}`
