@@ -16,12 +16,13 @@
             "type": "node",
             "request": "launch",
             "name": "Launch TS Node",
-            "program": "${workspaceFolder}/build/src/index.js",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/build/**/*.js",
-                "!**/node_modules/**"
-            ]
+            "program": "${workspaceFolder}/index.js",
+            "preLaunchTask": "npm: build",
+            "skipFiles": ["<node_internals>/**"],
+            "outFiles": ["${workspaceFolder}/dist/index.js"],
+            "args": ["new", "-i", "-d", "2020-10-10"],
+            "console": "integratedTerminal",
+            "sourceMaps": true
         },
         {
             "type": "node",
