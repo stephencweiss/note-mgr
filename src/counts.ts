@@ -1,12 +1,11 @@
 import chalk from "chalk"
 import { Command } from "commander"
-import { formatDt, Notes, Frontmatter, FrontmatterKeys } from "./utils"
+import { formatDt, Notes, IFrontmatter, FrontmatterKeys } from "./utils"
 
-type Style = keyof Frontmatter
 export function counters(args: Command) {
     const { category, date, publish, stage, tags } = args
 
-    const styles: Style[] = []
+    const styles: FrontmatterKeys[] = []
     if (category) {
         styles.push("category")
     }
@@ -22,31 +21,41 @@ export function counters(args: Command) {
     if (publish) {
         styles.push("publish")
     }
-    new CountNotes(styles)
+    new CountNotes(styles).count()
 }
 
 class CountNotes extends Notes {
     counted: Map<string, number> = new Map()
-    styles: Style[] = []
+    styles?: FrontmatterKeys[] = []
     total = 0
-    notes: Array<Frontmatter & { path: string }> = []
-    constructor(styles: Style[]) {
+    notes: Array<IFrontmatter> = []
+    constructor(styles?: FrontmatterKeys[]) {
         super()
         this.styles = styles
-        this.allNotesFrontmatter().then(() => {
-            this.total = this.notes.length
-            styles.forEach((style) => this.byStyle(style))
-        })
     }
-    print(style: Style) {
-        console.log(chalk.bold(`The count of notes by ${style}:`))
-        for (let [date, count] of this.counted) {
-            console.log(chalk.bold(`${date}: ${count}`))
+    async count() {
+        try {
+            this.notes = await this.allNotesFrontmatter()
+            this.total = this.notes.length
+            if (!this.styles || this.styles.length === 0) {
+                this.print()
+            }
+            this.styles!.forEach(async (style) => await this.byStyle(style))
+        } catch (error) {
+            throw new Error(`Failed to construct the CountNotes\n${error}`)
+        }
+    }
+    print(style?: FrontmatterKeys) {
+        if (style) {
+            console.log(chalk.bold(`The count of notes by ${style}:`))
+            for (let [date, count] of this.counted) {
+                console.log(chalk.bold(`${date}: ${count}`))
+            }
         }
         console.log(chalk.bold(`Total note count: ${this.total}`))
     }
 
-    async byStyle(style: Style) {
+    async byStyle(style: FrontmatterKeys) {
         this.counted = this.notes.reduce((acc, cur) => {
             const val = this.findVal(style, cur)
             if (Array.isArray(val)) {
@@ -70,14 +79,11 @@ class CountNotes extends Notes {
         this.print(style)
     }
     private findVal(
-        targetFrontmatter: keyof Frontmatter,
-        frontmatterObj: Frontmatter & { path: string }
+        targetFrontmatter: keyof IFrontmatter,
+        frontmatterObj: IFrontmatter
     ) {
-        if (
-            targetFrontmatter === FrontmatterKeys.date ||
-            targetFrontmatter === FrontmatterKeys.publish
-        ) {
-            return formatDt(frontmatterObj[targetFrontmatter])
+        if (targetFrontmatter === "date" || targetFrontmatter === "publish") {
+            return formatDt(frontmatterObj[targetFrontmatter] as string)
         }
         return frontmatterObj[targetFrontmatter]
     }
