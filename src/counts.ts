@@ -1,8 +1,8 @@
 import chalk from "chalk"
 import { Command } from "commander"
-import { formatDt, Notes, Frontmatter, FrontmatterKeys } from "./utils"
+import { formatDt, Notes, IFrontmatter } from "./utils"
 
-type Style = keyof Frontmatter
+type Style = keyof IFrontmatter
 export function counters(args: Command) {
     const { category, date, publish, stage, tags } = args
 
@@ -29,7 +29,7 @@ class CountNotes extends Notes {
     counted: Map<string, number> = new Map()
     styles: Style[] = []
     total = 0
-    notes: Array<Frontmatter & { path: string }> = []
+    notes: Array<IFrontmatter & { path: string }> = []
     constructor(styles: Style[]) {
         super()
         this.styles = styles
@@ -70,13 +70,10 @@ class CountNotes extends Notes {
         this.print(style)
     }
     private findVal(
-        targetFrontmatter: keyof Frontmatter,
-        frontmatterObj: Frontmatter & { path: string }
+        targetFrontmatter: keyof IFrontmatter,
+        frontmatterObj: IFrontmatter & { path: string }
     ) {
-        if (
-            targetFrontmatter === FrontmatterKeys.date ||
-            targetFrontmatter === FrontmatterKeys.publish
-        ) {
+        if (targetFrontmatter === "date" || targetFrontmatter === "publish") {
             return formatDt(frontmatterObj[targetFrontmatter])
         }
         return frontmatterObj[targetFrontmatter]
