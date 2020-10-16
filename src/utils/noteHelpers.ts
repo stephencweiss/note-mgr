@@ -6,7 +6,9 @@ import { DocumentStages, IFrontmatter, isValidDt, formatDt } from "."
 export function generateFrontmatter(options: IFrontmatter) {
     let frontmatter = ""
     for (let [key, val] of Object.entries(options)) {
-        if (key === "private") {
+        if (!val) {
+            frontmatter += `# ${key}: undefined`
+        } else if (key === "private") {
             frontmatter += `private: ${val}` // special handling due to Private being a restricted word in JS
         } else if (key === "date" || key === "publish") {
             frontmatter += `${key}: ${formatDt(val)}`
@@ -14,9 +16,8 @@ export function generateFrontmatter(options: IFrontmatter) {
             frontmatter += `${key}: "${val}"`
         } else if (Array.isArray(val)) {
             frontmatter += `${key}: [${val.map((el) => `"${el}"`).join(", ")}]`
-        } else {
-            frontmatter += `# ${key}: undefined`
         }
+
         frontmatter += `\n`
     }
     return `---\n${frontmatter}---\n`
@@ -46,7 +47,7 @@ export function parseArgs(args: any): IFrontmatter {
     options["slug"] = slug
     options["stage"] = stage || DocumentStages.Draft
     options["date"] = isValidDt(date) ? date : TODAY
-    options["publish"] = isValidDt(publish) ? publish : TODAY
+    options["publish"] = isValidDt(publish) && publish
     options["private"] = privateKey || false
     options["category"] = category
     options["tags"] = tags
