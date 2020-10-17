@@ -13,7 +13,7 @@
 To use the CLI, install it globally:
 
 ```shell
-$ yarn global add note-mgr
+$ yarn global add note-mgr-cli
 # or
 $ npm install note-mgr-cli --global
 ```
