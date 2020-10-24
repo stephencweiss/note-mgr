@@ -1,5 +1,5 @@
 {
-    "name": "note-mgr-cli",
+    "name": "note-mgr-cli-og",
     "version": "0.0.4",
     "scripts": {
         "lint:check": "prettier --config .prettierrc.js --check 'src/**/*{.ts, .js}'",
